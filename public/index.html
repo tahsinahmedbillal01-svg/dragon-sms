@@ -16,9 +16,8 @@
         .btn-success { background: #16a34a; color: #fff; }
         .btn-danger { background: #dc2626; color: #fff; }
 
-        /* Notification Toast Styling */
         #toast-container { position: fixed; top: 20px; right: 20px; z-index: 1000; }
-        .toast { padding: 12px 20px; border-radius: 5px; color: #fff; font-weight: bold; margin-bottom: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 10px; transition: all 0.3s ease; }
+        .toast { padding: 12px 20px; border-radius: 5px; color: #fff; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .toast-success { background: #16a34a; }
         .toast-error { background: #dc2626; }
 
@@ -37,13 +36,17 @@
         .list-view { display: flex; flex-direction: column; gap: 10px; }
 
         .product-card { border: 1px solid #e5e7eb; padding: 15px; border-radius: 8px; background: #fff; display: flex; flex-direction: column; justify-content: space-between; }
-        .list-view .product-card { flex-direction: row; align-items: center; }
 
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:100; }
-        .modal-content { background:#fff; padding:20px; border-radius:8px; width:380px; max-height:85vh; overflow-y:auto; }
+        .modal-content { background:#fff; padding:20px; border-radius:8px; width:400px; max-height:85vh; overflow-y:auto; }
+        .modal-large { width: 650px; }
         .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:8px; margin:8px 0; border:1px solid #ccc; border-radius:4px; }
-        
-        .stat-box { background:#f3f4f6; padding:10px; border-radius:5px; margin-bottom:10px; text-align:center; }
+
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .stat-box { background: #f3f4f6; padding: 12px; border-radius: 6px; text-align: center; }
+        .admin-sec { background: #fafafa; border: 1px solid #e5e7eb; padding: 12px; border-radius: 6px; margin-bottom: 15px; }
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 12px; }
+        .data-table th, .data-table td { border: 1px solid #ddd; padding: 6px; text-align: left; }
     </style>
 </head>
 <body>
@@ -56,6 +59,7 @@
             <span id="user-display" style="font-weight: bold;">Not Logged In</span>
             <button class="btn btn-primary" id="login-btn" onclick="openModal('login-modal')">Login</button>
             <button class="btn btn-success" id="signup-btn" onclick="openModal('signup-modal')">Sign Up</button>
+            <button class="btn btn-primary" id="dashboard-btn" style="display:none;" onclick="openUserDashboard()">My Dashboard</button>
             <button class="btn btn-danger" id="logout-btn" style="display:none;" onclick="logout()">Logout</button>
             <button class="btn btn-success" onclick="openModal('deposit-modal')">Deposit</button>
         </div>
@@ -68,7 +72,7 @@
     <div class="container">
         <div class="balance-card">
             <h3>Balance: <span id="user-balance" style="color:#16a34a;">$0.00</span> USD</h3>
-            <button class="btn btn-primary" onclick="openOrders()">Order History</button>
+            <button class="btn btn-primary" id="admin-dash-btn" style="display:none; background:#8b5cf6;" onclick="openAdminDashboard()">👑 Admin Panel</button>
         </div>
 
         <div class="view-controls">
@@ -118,42 +122,68 @@
         </div>
     </div>
 
-    <!-- Orders Modal -->
-    <div id="orders-modal" class="modal">
-        <div class="modal-content" style="width:450px;">
-            <h3>My Purchase History</h3>
-            <div id="orders-list" style="margin-top:10px;"></div>
-            <button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="closeModal('orders-modal')">Close</button>
+    <!-- User Dashboard Modal -->
+    <div id="user-modal" class="modal">
+        <div class="modal-content modal-large">
+            <h3>👤 User Profile & Dashboard</h3>
+            <div class="stat-grid" style="margin-top:10px;">
+                <div class="stat-box">Balance: <h3 id="u-dash-bal" style="color:#16a34a;">$0.00</h3></div>
+                <div class="stat-box">Items Bought: <h3 id="u-dash-count">0</h3></div>
+            </div>
+            <h4>My Purchased Items</h4>
+            <div id="u-dash-orders" style="max-height:200px; overflow-y:auto; margin-top:5px;"></div>
+            <button class="btn btn-primary" style="width:100%; margin-top:15px;" onclick="closeModal('user-modal')">Close</button>
         </div>
     </div>
 
-    <!-- Admin Dashboard Modal -->
+    <!-- Admin Advanced Control Panel -->
     <div id="admin-modal" class="modal">
-        <div class="modal-content" style="width:500px;">
-            <h3>👑 Admin Dashboard</h3>
-            <div style="display:flex; gap:10px; margin-top:10px;">
-                <div class="stat-box" style="flex:1;">Total Users: <h4 id="stat-users">0</h4></div>
-                <div class="stat-box" style="flex:1;">Today's Sales: <h4 id="stat-sales">$0.00</h4></div>
+        <div class="modal-content modal-large">
+            <h3>👑 Admin Advanced Panel</h3>
+            
+            <div class="stat-grid" style="margin-top:10px;">
+                <div class="stat-box">Total Users: <h3 id="stat-users">0</h3></div>
+                <div class="stat-box">Today Sales: <h3 id="stat-sales" style="color:#16a34a;">$0.00</h3></div>
             </div>
 
-            <h4 style="margin-top:10px;">Add Category</h4>
-            <input type="text" id="new-cat-input" placeholder="Category Name">
-            <button class="btn btn-primary" style="width:100%;" onclick="addCategory()">Add Category</button>
+            <!-- Manage Categories -->
+            <div class="admin-sec">
+                <h4>1. Category Management</h4>
+                <div style="display:flex; gap:10px; margin-top:5px;">
+                    <input type="text" id="new-cat-input" placeholder="New Category Name" style="margin:0;">
+                    <button class="btn btn-primary" onclick="addCategory()">Add Category</button>
+                </div>
+            </div>
 
-            <hr style="margin:15px 0;">
+            <!-- Upload Listing -->
+            <div class="admin-sec">
+                <h4>2. Upload Stock / Listing</h4>
+                <select id="prod-cat-select"></select>
+                <input type="text" id="prod-title" placeholder="Listing Title">
+                <input type="number" id="prod-price" placeholder="Price in USD (e.g. 0.50)">
+                <textarea id="prod-accounts" placeholder="Paste accounts line by line (email:pass)"></textarea>
+                <button class="btn btn-success" style="width:100%;" onclick="addProduct()">Upload Listing</button>
+            </div>
 
-            <h4>Upload Listing & Stock</h4>
-            <select id="prod-cat-select"></select>
-            <input type="text" id="prod-title" placeholder="Listing Title">
-            <input type="number" id="prod-price" placeholder="Price in USD (e.g. 0.50)">
-            <textarea id="prod-accounts" placeholder="Paste accounts line by line (email:pass)"></textarea>
-            <button class="btn btn-success" style="width:100%;" onclick="addProduct()">Upload Listing</button>
+            <!-- Delete Listings -->
+            <div class="admin-sec">
+                <h4>3. Manage & Delete Active Listings</h4>
+                <div id="admin-listings-table" style="max-height:150px; overflow-y:auto;"></div>
+            </div>
 
-            <hr style="margin:15px 0;">
-            <h4>Sold Products History</h4>
-            <div id="admin-sold-list" style="max-height:150px; overflow-y:auto; font-size:12px; background:#f9f9f9; padding:5px;"></div>
+            <!-- Category Sales Analytics -->
+            <div class="admin-sec">
+                <h4>4. Sales Analytics by Category</h4>
+                <div id="admin-cat-sales"></div>
+            </div>
 
-            <button class="btn btn-danger" style="width:100%; margin-top:10px;" onclick="closeModal('admin-modal')">Close Dashboard</button>
+            <!-- User Management -->
+            <div class="admin-sec">
+                <h4>5. Registered Users (Access Control)</h4>
+                <div id="admin-users-table" style="max-height:150px; overflow-y:auto;"></div>
+            </div>
+
+            <button class="btn btn-danger" style="width:100%;" onclick="closeModal('admin-modal')">Close Dashboard</button>
         </div>
     </div>
 
@@ -164,12 +194,10 @@
         let selectedCategory = 'All';
         let allProducts = [];
 
-        // Auto Notification System (Green for success, Red for error, disappears in 3 sec)
         function showNotification(message, type = 'success') {
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
             toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
-            
             document.getElementById('toast-container').appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
@@ -179,14 +207,22 @@
                 document.getElementById('user-display').innerText = currentUserName || currentUser;
                 document.getElementById('login-btn').style.display = 'none';
                 document.getElementById('signup-btn').style.display = 'none';
+                document.getElementById('dashboard-btn').style.display = 'inline-block';
                 document.getElementById('logout-btn').style.display = 'inline-block';
                 fetchBalance();
             } else {
                 document.getElementById('user-display').innerText = 'Not Logged In';
                 document.getElementById('login-btn').style.display = 'inline-block';
                 document.getElementById('signup-btn').style.display = 'inline-block';
+                document.getElementById('dashboard-btn').style.display = 'none';
                 document.getElementById('logout-btn').style.display = 'none';
                 document.getElementById('user-balance').innerText = '$0.00';
+            }
+
+            if (isAdminLoggedIn) {
+                document.getElementById('admin-dash-btn').style.display = 'inline-block';
+            } else {
+                document.getElementById('admin-dash-btn').style.display = 'none';
             }
         }
 
@@ -234,6 +270,7 @@
                 if (data.isAdmin) {
                     isAdminLoggedIn = true;
                     localStorage.setItem('isAdmin', 'true');
+                    updateUI();
                     openAdminDashboard();
                 } else {
                     currentUser = data.user.email;
@@ -255,29 +292,69 @@
             localStorage.clear();
             updateUI();
             fetchProducts();
-            showNotification('Logged out successfully!', 'success');
+            showNotification('Logged out!', 'success');
+        }
+
+        async function openUserDashboard(targetEmail = null) {
+            const emailToFetch = targetEmail || currentUser;
+            if (!emailToFetch) return;
+
+            const res = await fetch('/api/user/dashboard/' + emailToFetch);
+            const data = await res.json();
+
+            document.getElementById('u-dash-bal').innerText = '$' + data.balance.toFixed(2);
+            document.getElementById('u-dash-count').innerText = data.totalPurchased;
+
+            const container = document.getElementById('u-dash-orders');
+            container.innerHTML = '';
+            if (data.orders.length === 0) container.innerHTML = '<p>No items bought yet.</p>';
+
+            data.orders.forEach(o => {
+                container.innerHTML += `
+                    <div style="border-bottom:1px solid #ddd; padding:6px 0;">
+                        <strong>[${o.category}] ${o.productTitle}</strong> - $${o.price}<br>
+                        <code style="background:#eee; padding:2px 4px;">${o.accountData}</code>
+                    </div>
+                `;
+            });
+            openModal('user-modal');
         }
 
         async function openAdminDashboard() {
             fetchCategories();
-            const res = await fetch('/api/admin/stats');
+            const res = await fetch('/api/admin/analytics');
             const data = await res.json();
 
             document.getElementById('stat-users').innerText = data.totalUsers;
             document.getElementById('stat-sales').innerText = '$' + data.todaySalesUSD;
 
-            const soldContainer = document.getElementById('admin-sold-list');
-            soldContainer.innerHTML = '';
-            data.soldProductsList.forEach(s => {
-                soldContainer.innerHTML += `<div><strong>${s.productTitle}</strong> ($${s.price}) - ${s.email}</div>`;
+            // 1. Delete Listings Table
+            let listHTML = `<table class="data-table"><tr><th>Title</th><th>Category</th><th>Stock</th><th>Action</th></tr>`;
+            data.productsList.forEach(p => {
+                listHTML += `<tr><td>${p.title}</td><td>${p.category}</td><td>${p.stock.length}</td><td><button class="btn btn-danger" style="padding:2px 6px; font-size:10px;" onclick="deleteProduct(${p.id})">Delete</button></td></tr>`;
             });
+            document.getElementById('admin-listings-table').innerHTML = listHTML + `</table>`;
+
+            // 2. Category Sales Analysis
+            let catHTML = `<table class="data-table"><tr><th>Category</th><th>Items Sold</th><th>Total Revenue</th></tr>`;
+            for (let cat in data.categorySales) {
+                catHTML += `<tr><td>${cat}</td><td>${data.categorySales[cat].count}</td><td>$${data.categorySales[cat].amount.toFixed(2)}</td></tr>`;
+            }
+            document.getElementById('admin-cat-sales').innerHTML = catHTML + `</table>`;
+
+            // 3. Registered Users Table & Access
+            let userHTML = `<table class="data-table"><tr><th>Name</th><th>Email</th><th>Balance</th><th>Action</th></tr>`;
+            data.usersList.forEach(u => {
+                userHTML += `<tr><td>${u.firstName} ${u.lastName}</td><td>${u.email}</td><td>$${u.balance.toFixed(2)}</td><td><button class="btn btn-primary" style="padding:2px 6px; font-size:10px;" onclick="openUserDashboard('${u.email}')">View Dashboard</button></td></tr>`;
+            });
+            document.getElementById('admin-users-table').innerHTML = userHTML + `</table>`;
 
             openModal('admin-modal');
         }
 
         async function fetchBalance() {
             if (!currentUser) return;
-            const res = await fetch('/api/user/balance/' + currentUser);
+            const res = await fetch('/api/user/dashboard/' + currentUser);
             const data = await res.json();
             document.getElementById('user-balance').innerText = '$' + data.balance.toFixed(2);
         }
@@ -287,7 +364,7 @@
             const amount = document.getElementById('deposit-amount').value;
 
             if (!currentUser) return showNotification('Please login first!', 'error');
-            if (!amount || amount <= 0) return showNotification('Enter a valid amount!', 'error');
+            if (!amount || amount <= 0) return showNotification('Enter valid amount!', 'error');
 
             const res = await fetch('/api/deposit', {
                 method: 'POST',
@@ -347,7 +424,6 @@
                         </div>
                         <div>
                             <button class="btn btn-primary" style="width:100%; margin-top:5px;" onclick="buyProduct(${p.id})">Buy Now</button>
-                            ${isAdminLoggedIn ? `<button class="btn btn-danger" style="width:100%; margin-top:5px;" onclick="deleteProduct(${p.id})">Delete</button>` : ''}
                         </div>
                     </div>
                 `;
@@ -363,9 +439,9 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ category: cat })
             });
-            showNotification('Category added successfully!', 'success');
+            showNotification('Category added!', 'success');
             document.getElementById('new-cat-input').value = '';
-            fetchCategories();
+            openAdminDashboard();
         }
 
         async function addProduct() {
@@ -391,6 +467,7 @@
             if (confirm('Delete this listing?')) {
                 await fetch('/api/admin/delete-product/' + id, { method: 'DELETE' });
                 showNotification('Listing deleted!', 'success');
+                openAdminDashboard();
                 fetchProducts();
             }
         }
@@ -406,34 +483,12 @@
             const data = await res.json();
 
             if (data.success) {
-                showNotification('Purchased Account: ' + data.account, 'success');
+                showNotification('Purchased: ' + data.account, 'success');
                 fetchBalance();
                 fetchProducts();
             } else {
                 showNotification(data.message, 'error');
             }
-        }
-
-        async function openOrders() {
-            if (!currentUser) return showNotification('Please login first!', 'error');
-
-            const res = await fetch('/api/orders/' + currentUser);
-            const orders = await res.json();
-            const container = document.getElementById('orders-list');
-            container.innerHTML = '';
-
-            if (orders.length === 0) container.innerHTML = '<p>No orders found.</p>';
-
-            orders.forEach(o => {
-                container.innerHTML += `
-                    <div style="border-bottom:1px solid #ddd; padding:8px 0;">
-                        <strong>${o.productTitle}</strong> - $${o.price}<br>
-                        <code style="background:#eee; padding:2px 4px;">${o.accountData}</code><br>
-                        <small style="color:gray;">${o.date}</small>
-                    </div>
-                `;
-            });
-            openModal('orders-modal');
         }
 
         updateUI();
