@@ -7,14 +7,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #ebedf0; color: #333; }
+        body { background: #f1f5f9; color: #334155; }
         
-        header { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px 5%; border-bottom: 1px solid #dcdfe6; flex-wrap: wrap; gap: 15px; }
-        .logo { font-size: 22px; font-weight: bold; color: #1a1a1a; display: flex; align-items: center; gap: 8px; }
+        header { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px 5%; border-bottom: 1px solid #cbd5e1; flex-wrap: wrap; gap: 15px; }
+        .logo { font-size: 22px; font-weight: bold; color: #0f172a; display: flex; align-items: center; gap: 8px; }
         .user-panel { display: flex; gap: 10px; align-items: center; }
         
         .search-box { flex: 1; max-width: 400px; position: relative; }
-        .search-box input { width: 100%; padding: 8px 12px 8px 35px; border-radius: 20px; border: 1px solid #cbd5e1; outline: none; }
+        .search-box input { width: 100%; padding: 8px 12px 8px 35px; border-radius: 20px; border: 1px solid #cbd5e1; outline: none; font-size: 14px; }
         .search-box i { position: absolute; left: 12px; top: 10px; color: #94a3b8; }
 
         .btn { padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; font-size: 14px; transition: 0.2s; }
@@ -29,47 +29,47 @@
         .toast-success { background: #16a34a; }
         .toast-error { background: #dc2626; }
 
-        .cat-bar { display: flex; gap: 10px; background: #fff; padding: 12px 5%; border-bottom: 1px solid #dcdfe6; overflow-x: auto; align-items: center; }
-        .cat-btn { padding: 6px 14px; background: #f3f4f6; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; color: #4b5563; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
-        .cat-btn.active { background: #2563eb; color: white; }
+        .cat-bar { display: flex; gap: 10px; background: #fff; padding: 12px 5%; border-bottom: 1px solid #e2e8f0; overflow-x: auto; align-items: center; }
+        .cat-btn { padding: 6px 14px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; color: #475569; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+        .cat-btn.active { background: #2563eb; color: white; border-color: #2563eb; }
 
         .view-toggle { margin-left: auto; display: flex; gap: 5px; background: #e2e8f0; padding: 4px; border-radius: 6px; }
-        .view-btn { padding: 6px 10px; border-radius: 4px; cursor: pointer; color: #475569; }
+        .view-btn { padding: 6px 12px; border-radius: 4px; cursor: pointer; color: #475569; font-size: 13px; }
         .view-btn.active { background: #fff; color: #2563eb; font-weight: bold; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
         .container { padding: 20px 5%; }
-        .balance-card { background: #fff; padding: 18px 24px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .balance-card { background: #fff; padding: 18px 24px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #e2e8f0; }
 
-        .category-block { margin-bottom: 25px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .category-block { margin-bottom: 25px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
         .category-header { background: #1e293b; color: #fff; padding: 12px 20px; font-weight: bold; font-size: 16px; }
 
-        /* Row Layout */
-        .row-item { background: #fff; padding: 14px 20px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+        /* Row Format */
+        .row-item { background: #fff; padding: 14px 20px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; gap: 15px; }
         .row-left { display: flex; align-items: center; gap: 15px; flex: 1; cursor: pointer; }
         .row-icon { width: 32px; height: 32px; object-fit: contain; }
         .row-title { font-weight: 600; font-size: 14px; color: #1e293b; }
         .row-title:hover { color: #2563eb; text-decoration: underline; }
         .row-mid { display: flex; gap: 30px; align-items: center; text-align: right; }
 
-        /* Grid Layout (Box View) */
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; padding: 15px; background: #fff; }
-        .grid-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s; background: #f8fafc; }
-        .grid-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        /* Grid / Box Format */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; padding: 15px; background: #fff; }
+        .grid-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; background: #f8fafc; transition: 0.2s; }
+        .grid-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .grid-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; cursor: pointer; }
-        .grid-card-img { width: 45px; height: 45px; object-fit: contain; border-radius: 6px; }
+        .grid-card-img { width: 40px; height: 40px; object-fit: contain; border-radius: 6px; }
 
         /* Modals */
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:999; }
         .modal-content { background:#fff; padding:25px; border-radius:10px; width:450px; max-height:90vh; overflow-y:auto; position: relative; }
         .modal-close { position: absolute; top: 15px; right: 18px; font-size: 22px; cursor: pointer; color: #6b7280; font-weight: bold; }
-        .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:10px; margin:6px 0 12px 0; border:1px solid #d1d5db; border-radius:6px; font-size: 14px; }
+        .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:10px; margin:6px 0 12px 0; border:1px solid #cbd5e1; border-radius:6px; font-size: 14px; }
 
         .dash-modal-layout { width: 95vw; height: 92vh; max-width: 1400px; padding: 0; display: flex; overflow: hidden; border-radius: 12px; }
-        .dash-sidebar { width: 230px; background: #0a1128; color: #fff; padding: 20px 0; display: flex; flex-direction: column; justify-content: space-between; }
+        .dash-sidebar { width: 230px; background: #0f172a; color: #fff; padding: 20px 0; display: flex; flex-direction: column; justify-content: space-between; }
         .dash-sidebar .brand { padding: 0 20px 20px; font-size: 18px; font-weight: bold; border-bottom: 1px solid #1e293b; }
         .dash-menu { list-style: none; margin-top: 15px; }
         .dash-menu li { padding: 12px 20px; cursor: pointer; font-size: 14px; color: #94a3b8; display: flex; align-items: center; gap: 10px; }
-        .dash-menu li.active, .dash-menu li:hover { background: #1d4ed8; color: #fff; }
+        .dash-menu li.active, .dash-menu li:hover { background: #2563eb; color: #fff; }
         .dash-main { flex: 1; background: #f8fafc; padding: 20px; overflow-y: auto; }
 
         .admin-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px; margin-bottom: 20px; }
@@ -95,14 +95,14 @@
     <header>
         <div class="logo">🐉 DRAGON SMS</div>
         
-        <!-- Live Instant Search Bar -->
+        <!-- Search Option -->
         <div class="search-box">
             <i class="fas fa-search"></i>
-            <input type="text" id="search-input" placeholder="Search accounts or products..." onkeyup="filterProductsBySearch()">
+            <input type="text" id="search-input" placeholder="Search account or product..." onkeyup="filterProductsBySearch()">
         </div>
 
         <div class="user-panel">
-            <span id="user-display" style="font-weight: 600; color: #4b5563;">Not Logged In</span>
+            <span id="user-display" style="font-weight: 600; color: #475569;">Not Logged In</span>
             <button class="btn btn-primary" id="login-btn" onclick="openModal('login-modal')">Login</button>
             <button class="btn btn-success" id="signup-btn" onclick="openModal('signup-modal')">Sign Up</button>
             <button class="btn btn-primary" id="dashboard-btn" style="display:none;" onclick="openUserDashboard()">Dashboard</button>
@@ -114,7 +114,7 @@
     <div class="cat-bar">
         <div id="category-bar" style="display:flex; gap:10px;"></div>
         
-        <!-- View Toggle (Box vs Row View) -->
+        <!-- View Mode Switcher -->
         <div class="view-toggle">
             <div class="view-btn" id="btn-view-row" onclick="setProductView('row')"><i class="fas fa-list"></i> Row</div>
             <div class="view-btn" id="btn-view-grid" onclick="setProductView('grid')"><i class="fas fa-th-large"></i> Box</div>
@@ -144,7 +144,7 @@
                 </div>
             </div>
             <div style="background:#f8fafc; padding:15px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:15px;">
-                <h4 style="font-size:13px; color:#475569; margin-bottom:5px;">Product Description:</h4>
+                <h4 style="font-size:13px; color:#475569; margin-bottom:5px;">Description:</h4>
                 <p id="desc-body" style="font-size: 14px; color:#334155; line-height: 1.6; white-space: pre-line;"></p>
             </div>
             <button class="btn btn-buy" style="width:100%; font-size:15px;" id="desc-buy-btn"><i class="fas fa-shopping-cart"></i> Buy Now</button>
@@ -159,7 +159,7 @@
             <p style="font-size:13px; color:gray;">Price per pc: $<span id="buy-unit-price">0.00</span></p>
             <input type="hidden" id="buy-prod-id">
             
-            <label style="margin-top:10px; font-weight:bold;">Select Quantity:</label>
+            <label style="margin-top:10px; font-weight:bold;">Quantity:</label>
             <input type="number" id="buy-qty" value="1" min="1" oninput="calculateBuyTotal()">
 
             <div style="background:#f1f5f9; padding:12px; border-radius:6px; margin-bottom:15px;">
@@ -167,33 +167,18 @@
                 <h3 style="color:#16a34a;" id="buy-total-calc">$0.00 USD</h3>
             </div>
 
-            <button class="btn btn-buy" style="width:100%;" onclick="confirmPurchase()">Confirm & Pay</button>
+            <button class="btn btn-buy" style="width:100%;" onclick="confirmPurchase()">Confirm Purchase</button>
         </div>
     </div>
 
-    <!-- Auth & Other Modals -->
+    <!-- Login/Signup Modals -->
     <div id="login-modal" class="modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal('login-modal')">&times;</span>
             <h3 style="margin-bottom: 15px;">Login</h3>
-            <label>Email</label>
-            <input type="email" id="login-email">
-            <label>Password</label>
-            <input type="password" id="login-pass">
+            <label>Email</label><input type="email" id="login-email">
+            <label>Password</label><input type="password" id="login-pass">
             <button class="btn btn-primary" style="width:100%; margin-top:5px;" onclick="login()">Login</button>
-            <p style="margin-top:10px; text-align:right;"><a href="javascript:void(0)" onclick="closeModal('login-modal'); openModal('forgot-modal')" style="color:#2563eb; font-size:12px;">Forgot Password?</a></p>
-        </div>
-    </div>
-
-    <div id="forgot-modal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeModal('forgot-modal')">&times;</span>
-            <h3 style="margin-bottom: 15px;">Reset Password</h3>
-            <label>Registered Email</label>
-            <input type="email" id="forgot-email">
-            <label>New Password</label>
-            <input type="password" id="forgot-new-pass">
-            <button class="btn btn-success" style="width:100%;" onclick="resetPassword()">Update Password</button>
         </div>
     </div>
 
@@ -252,7 +237,7 @@
             </div>
 
             <div class="dash-main">
-                <div class="dash-header">
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
                     <h2>Admin Dashboard</h2>
                     <button class="btn btn-danger" onclick="closeModal('admin-modal')">Close</button>
                 </div>
@@ -272,15 +257,15 @@
                         </div>
 
                         <div class="admin-card">
-                            <h4><i class="fas fa-cloud-upload-alt"></i> Listing Form (File Upload Supported)</h4>
+                            <h4><i class="fas fa-cloud-upload-alt"></i> Add Product (Gallery Upload Supported)</h4>
                             <input type="hidden" id="edit-prod-id">
                             <select id="prod-cat-select"></select>
                             <input type="text" id="prod-title" placeholder="Listing Title">
                             <input type="text" id="prod-desc" placeholder="Product Description">
                             <input type="number" id="prod-price" placeholder="Price in USD">
                             
-                            <!-- File Browser Image Upload -->
-                            <label style="font-size:12px; font-weight:bold;">Upload Image/Icon from Gallery:</label>
+                            <!-- File input for image upload from gallery -->
+                            <label style="font-size:12px; font-weight:bold;">Upload Image from Mobile/PC Gallery:</label>
                             <input type="file" id="prod-file-input" accept="image/*" onchange="convertImageToBase64()">
                             <input type="hidden" id="prod-img">
 
@@ -295,16 +280,16 @@
                     </div>
                 </div>
 
-                <!-- Admin Live Chat Section -->
+                <!-- Admin Live Support Chat Hub -->
                 <div id="a-sec-chat" style="display:none;">
                     <div class="admin-card">
-                        <h4><i class="fas fa-comments"></i> Active Customer Support Chats</h4>
+                        <h4><i class="fas fa-comments"></i> Active Customer Live Support Chats</h4>
                         <div style="display:flex; gap:20px; height:400px; margin-top:15px;">
-                            <div id="admin-chat-users-list" style="width:200px; border-right:1px solid #cbd5e1; overflow-y:auto;"></div>
+                            <div id="admin-chat-users-list" style="width:220px; border-right:1px solid #cbd5e1; overflow-y:auto;"></div>
                             <div style="flex:1; display:flex; flex-direction:column;">
-                                <div id="admin-chat-messages" style="flex:1; background:#f1f5f9; padding:15px; overflow-y:auto; border-radius:6px;">Select a user to chat</div>
+                                <div id="admin-chat-messages" style="flex:1; background:#f1f5f9; padding:15px; overflow-y:auto; border-radius:6px; border:1px solid #e2e8f0;">Select a user from left list</div>
                                 <div style="display:flex; gap:10px; margin-top:10px;">
-                                    <input type="text" id="admin-chat-input" placeholder="Type reply..." style="margin:0;">
+                                    <input type="text" id="admin-chat-input" placeholder="Type reply message..." style="margin:0;">
                                     <button class="btn btn-primary" onclick="sendAdminChatReply()">Send Reply</button>
                                 </div>
                             </div>
@@ -315,49 +300,14 @@
         </div>
     </div>
 
-    <!-- Customer Dashboard Modal -->
-    <div id="user-modal" class="modal">
-        <div class="modal-content dash-modal-layout">
-            <div class="dash-sidebar">
-                <div>
-                    <div class="brand">🛍️ My Account</div>
-                    <ul class="dash-menu">
-                        <li id="u-tab-dash" class="active" onclick="switchUserTab('dash')"><i class="fas fa-th-large"></i> Dashboard</li>
-                        <li id="u-tab-orders" onclick="switchUserTab('orders')"><i class="fas fa-shopping-bag"></i> My Orders</li>
-                        <li id="u-tab-deposits" onclick="switchUserTab('deposits')"><i class="fas fa-wallet"></i> Deposits</li>
-                    </ul>
-                </div>
-                <div style="padding: 0 20px;"><button class="btn btn-danger" style="width: 100%;" onclick="logout()">Logout</button></div>
-            </div>
-
-            <div class="dash-main">
-                <div class="dash-header">
-                    <h2>Welcome, <span id="u-dash-name">User</span>!</h2>
-                    <button class="btn btn-danger" onclick="closeModal('user-modal')">Close</button>
-                </div>
-                <div id="u-section-dash" class="u-tab-content">
-                    <div class="admin-card">
-                        <h3>Total Spent: <span id="u-stat-spent" style="color:#16a34a;">$0.00</span></h3>
-                    </div>
-                </div>
-                <div id="u-section-orders" class="u-tab-content" style="display:none;">
-                    <div class="admin-card"><h4>My Orders</h4><div id="u-orders-table"></div></div>
-                </div>
-                <div id="u-section-deposits" class="u-tab-content" style="display:none;">
-                    <div class="admin-card"><h4>Deposits History</h4><div id="u-deposits-table"></div></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Floating Live Chat -->
+    <!-- Floating Live Chat for Customer -->
     <div class="chat-widget">
         <button class="chat-btn-float" onclick="toggleChat()"><i class="fas fa-comments"></i> Live Chat</button>
         <div class="chat-box" id="chat-box">
             <div class="chat-header"><span>💬 Live Support</span><span style="cursor:pointer;" onclick="toggleChat()">&times;</span></div>
             <div class="chat-body" id="chat-body"></div>
             <div class="chat-footer">
-                <input type="text" id="chat-input" placeholder="Type a message..." style="margin:0;">
+                <input type="text" id="chat-input" placeholder="Type message..." style="margin:0;">
                 <button class="btn btn-primary" onclick="sendChatMessage()">Send</button>
             </div>
         </div>
@@ -444,7 +394,7 @@
             renderProducts();
         }
 
-        // Convert Uploaded File from Gallery to Base64 Image String
+        // Gallery File Selection -> Convert Image to Base64
         function convertImageToBase64() {
             const file = document.getElementById('prod-file-input').files[0];
             if (file) {
@@ -473,7 +423,7 @@
                 if (categoryProds.length === 0) return;
                 const catObj = allCategories.find(c => c.name === catName) || {};
 
-                if (currentView === 'row') {
+                if (currentView === 'row') { // Row List
                     let itemsHTML = '';
                     categoryProds.forEach(p => {
                         const icon = p.imageUrl || catObj.icon || 'https://via.placeholder.com/32';
@@ -484,18 +434,18 @@
                                     <span class="row-title">${p.title}</span>
                                 </div>
                                 <div class="row-mid">
-                                    <div><span class="stock-text" style="font-weight:bold;">${p.stockCount} pcs.</span><br><span style="font-size:11px; color:gray;">Sold ${p.soldCount}</span></div>
-                                    <div><span style="font-size:13px; color:gray;">Price</span><div style="font-weight:bold;">from $${p.price.toFixed(2)}</div></div>
+                                    <div><span style="font-weight:bold;">${p.stockCount} pcs</span><br><span style="font-size:11px; color:gray;">Sold ${p.soldCount}</span></div>
+                                    <div><span style="font-size:12px; color:gray;">Price</span><div style="font-weight:bold;">$${p.price.toFixed(2)}</div></div>
                                     <button class="btn btn-buy" onclick="openBuyModal(${p.id})"><i class="fas fa-shopping-cart"></i> Buy</button>
                                 </div>
                             </div>
                         `;
                     });
                     wrapper.innerHTML += `<div class="category-block"><div class="category-header">${catName} Accounts</div>${itemsHTML}</div>`;
-                } else { // Box / Grid View
+                } else { // Grid / Box Mode
                     let gridHTML = '';
                     categoryProds.forEach(p => {
-                        const icon = p.imageUrl || catObj.icon || 'https://via.placeholder.com/45';
+                        const icon = p.imageUrl || catObj.icon || 'https://via.placeholder.com/40';
                         gridHTML += `
                             <div class="grid-card">
                                 <div>
@@ -503,10 +453,10 @@
                                         <img src="${icon}" class="grid-card-img">
                                         <div style="font-weight:bold; font-size:14px; color:#1e293b;">${p.title}</div>
                                     </div>
-                                    <div style="font-size:12px; color:gray; margin-bottom:10px;">In Stock: <b>${p.stockCount} pcs</b> | Sold: ${p.soldCount}</div>
+                                    <div style="font-size:12px; color:gray; margin-bottom:10px;">Stock: <b>${p.stockCount} pcs</b> | Sold: ${p.soldCount}</div>
                                 </div>
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
-                                    <div style="font-size:16px; font-weight:bold; color:#16a34a;">$${p.price.toFixed(2)}</div>
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <div style="font-size:15px; font-weight:bold; color:#16a34a;">$${p.price.toFixed(2)}</div>
                                     <button class="btn btn-buy" onclick="openBuyModal(${p.id})">Buy</button>
                                 </div>
                             </div>
@@ -523,8 +473,8 @@
 
             document.getElementById('desc-img').src = p.imageUrl || 'https://via.placeholder.com/50';
             document.getElementById('desc-title').innerText = p.title;
-            document.getElementById('desc-price-tag').innerText = `Price: $${p.price.toFixed(2)} USD | In Stock: ${p.stockCount} pcs`;
-            document.getElementById('desc-body').innerText = p.description || "No additional detailed description available for this item.";
+            document.getElementById('desc-price-tag').innerText = `Price: $${p.price.toFixed(2)} USD | Available Stock: ${p.stockCount} pcs`;
+            document.getElementById('desc-body').innerText = p.description || "No description provided.";
             
             const buyBtn = document.getElementById('desc-buy-btn');
             buyBtn.onclick = function() {
@@ -577,47 +527,6 @@
             }
         }
 
-        async function signup() {
-            const firstName = document.getElementById('signup-fn').value;
-            const lastName = document.getElementById('signup-ln').value;
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-pass').value;
-            const confirmPassword = document.getElementById('signup-cpass').value;
-
-            const res = await fetch('/api/auth/signup', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ firstName, lastName, email, password, confirmPassword })
-            });
-            const data = await res.json();
-            if (data.success) {
-                showNotification(data.message, 'success');
-                closeModal('signup-modal');
-                openModal('login-modal');
-            } else {
-                showNotification(data.message, 'error');
-            }
-        }
-
-        async function resetPassword() {
-            const email = document.getElementById('forgot-email').value;
-            const newPassword = document.getElementById('forgot-new-pass').value;
-
-            const res = await fetch('/api/auth/forgot-password', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ email, newPassword })
-            });
-            const data = await res.json();
-            if (data.success) {
-                showNotification(data.message, 'success');
-                closeModal('forgot-modal');
-                openModal('login-modal');
-            } else {
-                showNotification(data.message, 'error');
-            }
-        }
-
         async function login() {
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-pass').value;
@@ -656,7 +565,6 @@
             isAdminLoggedIn = false;
             localStorage.clear();
             closeModal('admin-modal');
-            closeModal('user-modal');
             updateUI();
             fetchProducts();
             showNotification('Logged out!', 'success');
@@ -703,21 +611,21 @@
             const res = await fetch('/api/admin/analytics');
             const data = await res.json();
 
-            // Render Pending Deposits
+            // Pending Deposits Table
             let depHTML = `<table class="data-table"><tr><th>User</th><th>TrxID</th><th>Method</th><th>Amount</th><th>Action</th></tr>`;
             data.pendingDeposits.forEach(d => {
                 depHTML += `<tr><td>${d.email}</td><td><code>${d.txId}</code></td><td>${d.method}</td><td>$${d.amount}</td><td><button class="btn btn-success" style="padding:2px 8px; font-size:11px;" onclick="approveDeposit(${d.id})">Approve</button></td></tr>`;
             });
             document.getElementById('admin-pending-deposits').innerHTML = depHTML + `</table>`;
 
-            // Render Active Chat Users List for Admin
+            // Render Active Live Support Users for Admin
             let usersHTML = '';
             data.activeChatUsers.forEach(u => {
                 usersHTML += `<div style="padding:10px; cursor:pointer; border-bottom:1px solid #e2e8f0; font-size:12px;" onclick="loadAdminChatForUser('${u}')">💬 ${u}</div>`;
             });
             document.getElementById('admin-chat-users-list').innerHTML = usersHTML || '<p style="padding:10px; font-size:12px; color:gray;">No chat active</p>';
 
-            // Listings
+            // Listings Table
             let listHTML = `<table class="data-table"><tr><th>Title</th><th>Stock</th><th>Action</th></tr>`;
             data.productsList.forEach(p => {
                 listHTML += `<tr><td>${p.title}</td><td>${p.stock.length}</td><td><button class="btn btn-danger" style="padding:2px 8px; font-size:11px;" onclick="deleteProduct(${p.id})">Delete</button></td></tr>`;
@@ -743,7 +651,7 @@
             msgs.forEach(m => {
                 const isAdmin = m.sender === 'Admin';
                 chatHTML += `<div style="margin-bottom:8px; text-align:${isAdmin ? 'right' : 'left'};">
-                    <span style="background:${isAdmin ? '#2563eb' : '#e2e8f0'}; color:${isAdmin ? '#fff' : '#000'}; padding:6px 12px; border-radius:8px; font-size:13px; display:inline-block;">
+                    <span style="background:${isAdmin ? '#2563eb' : '#cbd5e1'}; color:${isAdmin ? '#fff' : '#000'}; padding:6px 12px; border-radius:8px; font-size:13px; display:inline-block;">
                         <strong>${m.sender}:</strong> ${m.message}
                     </span>
                 </div>`;
@@ -824,7 +732,7 @@
 
         function copyPurchasedData() {
             navigator.clipboard.writeText(currentPurchasedData);
-            showNotification('Data copied!', 'success');
+            showNotification('Copied!', 'success');
         }
 
         function downloadPurchasedData() {
