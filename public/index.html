@@ -7,59 +7,57 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #f4f6f9; color: #333; }
+        body { background: #ebedf0; color: #333; }
         
-        header { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px 5%; border-bottom: 1px solid #e5e7eb; }
+        header { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px 5%; border-bottom: 1px solid #dcdfe6; }
         .logo { font-size: 22px; font-weight: bold; color: #1a1a1a; display: flex; align-items: center; gap: 8px; }
         .user-panel { display: flex; gap: 10px; align-items: center; }
         
         .btn { padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; font-size: 14px; transition: 0.2s; }
         .btn-primary { background: #2563eb; color: #fff; }
-        .btn-primary:hover { background: #1d4ed8; }
         .btn-success { background: #16a34a; color: #fff; }
-        .btn-success:hover { background: #15803d; }
         .btn-danger { background: #dc2626; color: #fff; }
-        .btn-danger:hover { background: #b91c1c; }
+        .btn-buy { background: #d97706; color: #fff; padding: 8px 18px; border-radius: 5px; font-weight: bold; }
+        .btn-buy:hover { background: #b45309; }
         
         #toast-container { position: fixed; top: 20px; right: 20px; z-index: 1000; }
         .toast { padding: 12px 20px; border-radius: 6px; color: #fff; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
         .toast-success { background: #16a34a; }
         .toast-error { background: #dc2626; }
 
-        .cat-bar { display: flex; gap: 10px; background: #fff; padding: 12px 5%; border-bottom: 1px solid #e5e7eb; overflow-x: auto; }
-        .cat-btn { padding: 6px 14px; background: #f3f4f6; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; color: #4b5563; }
+        .cat-bar { display: flex; gap: 10px; background: #fff; padding: 12px 5%; border-bottom: 1px solid #dcdfe6; overflow-x: auto; }
+        .cat-btn { padding: 6px 14px; background: #f3f4f6; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; color: #4b5563; display: flex; align-items: center; gap: 6px; }
         .cat-btn.active { background: #2563eb; color: white; }
 
-        .container { padding: 25px 5%; }
-        .balance-card { background: #fff; padding: 18px 24px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .container { padding: 20px 5%; }
+        .balance-card { background: #fff; padding: 18px 24px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
 
-        .view-controls { display: flex; justify-content: space-between; align-items: center; background: #2563eb; color: #fff; padding: 12px 20px; border-radius: 8px 8px 0 0; font-weight: 600; }
-        .view-btn { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; margin-left: 10px; opacity: 0.7; }
-        .view-btn.active { opacity: 1; font-weight: bold; }
+        /* Categories Section Container like Image */
+        .category-block { margin-bottom: 25px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .category-header { background: #1e293b; color: #fff; padding: 12px 20px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; }
 
-        .product-container { background: #fff; padding: 20px; border-radius: 0 0 8px 8px; min-height: 200px; }
+        /* Exact Replica Row Item from User Image */
+        .row-item { background: #fff; padding: 14px 20px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+        .row-item:last-child { border-bottom: none; }
+        .row-left { display: flex; align-items: center; gap: 15px; flex: 1; cursor: pointer; }
+        .row-icon { width: 32px; height: 32px; object-fit: contain; }
+        .row-title { font-weight: 600; font-size: 14px; color: #1e293b; }
+        .row-title:hover { color: #2563eb; text-decoration: underline; }
         
-        /* Grid Layout */
-        .grid-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
-        .grid-view .product-card { border: 1px solid #e5e7eb; border-radius: 10px; background: #fff; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
-        .grid-view .product-img { width: 100%; height: 140px; object-fit: cover; background: #f8fafc; }
-        .grid-view .product-body { padding: 15px; }
+        .row-mid { display: flex; gap: 30px; align-items: center; text-align: right; }
+        .stock-text { font-size: 13px; font-weight: bold; color: #334155; }
+        .sold-text { font-size: 11px; color: #64748b; display: block; }
+        .price-text { font-size: 14px; color: #475569; }
+        .price-amount { font-size: 15px; font-weight: bold; color: #0f172a; }
 
-        /* Row / List Layout */
-        .list-view { display: flex; flex-direction: column; gap: 15px; }
-        .list-view .product-card { border: 1px solid #e5e7eb; border-radius: 10px; background: #fff; padding: 15px; display: flex; align-items: center; gap: 20px; justify-content: space-between; }
-        .list-view .product-img { width: 90px; height: 90px; border-radius: 8px; object-fit: cover; }
-        .list-view .product-body { flex: 1; }
-
+        /* Modals */
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:999; }
-        .modal-content { background:#fff; padding:25px; border-radius:10px; width:440px; max-height:90vh; overflow-y:auto; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-content { background:#fff; padding:25px; border-radius:10px; width:450px; max-height:90vh; overflow-y:auto; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .modal-close { position: absolute; top: 15px; right: 18px; font-size: 22px; cursor: pointer; color: #6b7280; font-weight: bold; }
         
         .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:10px; margin:6px 0 12px 0; border:1px solid #d1d5db; border-radius:6px; font-size: 14px; }
-        .pass-container { position: relative; }
-        .pass-toggle { position: absolute; right: 12px; top: 38px; cursor: pointer; color: #6b7280; }
 
-        /* Dashboard Screen Structure */
+        /* Full Dashboard Layout */
         .dash-modal-layout { width: 95vw; height: 92vh; max-width: 1400px; padding: 0; display: flex; overflow: hidden; border-radius: 12px; }
         .dash-sidebar { width: 230px; background: #0a1128; color: #fff; padding: 20px 0; display: flex; flex-direction: column; justify-content: space-between; }
         .dash-sidebar .brand { padding: 0 20px 20px; font-size: 18px; font-weight: bold; border-bottom: 1px solid #1e293b; }
@@ -79,6 +77,18 @@
         .data-table th, .data-table td { border-bottom: 1px solid #f1f5f9; padding: 10px; text-align: left; }
         .data-table th { background: #f8fafc; color: #64748b; font-weight: 600; }
         .status-badge { padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; background: #dcfce7; color: #15803d; }
+        .status-pending { background: #fef3c7; color: #d97706; }
+
+        /* Floating Live Chat Box */
+        .chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+        .chat-btn-float { background: #2563eb; color: #fff; padding: 12px 20px; border-radius: 30px; font-weight: bold; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; }
+        .chat-box { display: none; width: 320px; height: 400px; background: #fff; border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); flex-direction: column; overflow: hidden; position: absolute; bottom: 60px; right: 0; }
+        .chat-header { background: #2563eb; color: #fff; padding: 12px 15px; font-weight: bold; display: flex; justify-content: space-between; }
+        .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #f8fafc; font-size: 13px; }
+        .chat-msg { margin-bottom: 10px; padding: 8px 12px; border-radius: 8px; max-width: 80%; }
+        .chat-msg.me { background: #2563eb; color: #fff; margin-left: auto; }
+        .chat-msg.other { background: #e2e8f0; color: #1e293b; }
+        .chat-footer { padding: 10px; display: flex; gap: 5px; background: #fff; border-top: 1px solid #e2e8f0; }
     </style>
 </head>
 <body>
@@ -109,15 +119,37 @@
             <button class="btn btn-primary" id="admin-dash-btn" style="display:none; background:#8b5cf6;" onclick="openAdminDashboard()">👑 Admin Panel</button>
         </div>
 
-        <div class="view-controls">
-            <span>Available Listings</span>
-            <div>
-                <button class="view-btn active" id="btn-grid-view" onclick="switchView('grid')"><i class="fas fa-th-large"></i> Box View</button>
-                <button class="view-btn" id="btn-list-view" onclick="switchView('list')"><i class="fas fa-list"></i> Row View</button>
-            </div>
-        </div>
+        <!-- Rendered Row Layout Products -->
+        <div id="products-wrapper"></div>
+    </div>
 
-        <div id="product-list" class="product-container grid-view"></div>
+    <!-- Description Modal -->
+    <div id="desc-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('desc-modal')">&times;</span>
+            <h3 id="desc-title" style="margin-bottom: 10px; color:#1e293b;">Product Title</h3>
+            <p id="desc-body" style="font-size: 14px; color:#475569; line-height: 1.5; white-space: pre-line;"></p>
+        </div>
+    </div>
+
+    <!-- Buy Modal with Quantity & Live Total Calculator -->
+    <div id="buy-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('buy-modal')">&times;</span>
+            <h3 id="buy-title" style="margin-bottom: 10px;">Buy Product</h3>
+            <p style="font-size:13px; color:gray;">Price per pc: $<span id="buy-unit-price">0.00</span></p>
+            <input type="hidden" id="buy-prod-id">
+            
+            <label style="margin-top:10px; font-weight:bold;">Select Quantity (How many pieces?):</label>
+            <input type="number" id="buy-qty" value="1" min="1" oninput="calculateBuyTotal()">
+
+            <div style="background:#f1f5f9; padding:12px; border-radius:6px; margin-bottom:15px;">
+                <span style="font-size:14px; color:#475569;">Total Amount:</span>
+                <h3 style="color:#16a34a;" id="buy-total-calc">$0.00 USD</h3>
+            </div>
+
+            <button class="btn btn-buy" style="width:100%;" onclick="confirmPurchase()">Confirm & Pay</button>
+        </div>
     </div>
 
     <!-- Login Modal -->
@@ -127,16 +159,27 @@
             <h3 style="margin-bottom: 15px;">User & Admin Login</h3>
             <label>Email Address</label>
             <input type="email" id="login-email" placeholder="Enter your email">
-            <div class="pass-container">
-                <label>Password</label>
-                <input type="password" id="login-pass" placeholder="Enter password">
-                <i class="fas fa-eye pass-toggle" onclick="togglePassword('login-pass', this)"></i>
-            </div>
-            <button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="login()">Login</button>
+            <label>Password</label>
+            <input type="password" id="login-pass" placeholder="Enter password">
+            <button class="btn btn-primary" style="width:100%; margin-top:5px;" onclick="login()">Login</button>
+            <p style="margin-top:10px; text-align:right;"><a href="javascript:void(0)" onclick="closeModal('login-modal'); openModal('forgot-modal')" style="color:#2563eb; font-size:12px;">Forgot Password?</a></p>
         </div>
     </div>
 
-    <!-- Signup Modal with Show Password -->
+    <!-- Forgot Password Modal -->
+    <div id="forgot-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('forgot-modal')">&times;</span>
+            <h3 style="margin-bottom: 15px;">Reset Password</h3>
+            <label>Registered Email</label>
+            <input type="email" id="forgot-email" placeholder="Enter your email">
+            <label>New Password</label>
+            <input type="password" id="forgot-new-pass" placeholder="Enter new password">
+            <button class="btn btn-success" style="width:100%;" onclick="resetPassword()">Update Password</button>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
     <div id="signup-modal" class="modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal('signup-modal')">&times;</span>
@@ -147,24 +190,15 @@
             <input type="text" id="signup-ln" placeholder="Last Name">
             <label>Email Address</label>
             <input type="email" id="signup-email" placeholder="Email Address">
-            
-            <div class="pass-container">
-                <label>Password</label>
-                <input type="password" id="signup-pass" placeholder="Password">
-                <i class="fas fa-eye pass-toggle" onclick="togglePassword('signup-pass', this)"></i>
-            </div>
-            
-            <div class="pass-container">
-                <label>Confirm Password</label>
-                <input type="password" id="signup-cpass" placeholder="Confirm Password">
-                <i class="fas fa-eye pass-toggle" onclick="togglePassword('signup-cpass', this)"></i>
-            </div>
-            
+            <label>Password</label>
+            <input type="password" id="signup-pass" placeholder="Password">
+            <label>Confirm Password</label>
+            <input type="password" id="signup-cpass" placeholder="Confirm Password">
             <button class="btn btn-success" style="width:100%; margin-top:10px;" onclick="signup()">Sign Up</button>
         </div>
     </div>
 
-    <!-- Deposit Modal -->
+    <!-- Deposit Modal with TrxID -->
     <div id="deposit-modal" class="modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal('deposit-modal')">&times;</span>
@@ -176,7 +210,9 @@
             </select>
             <label>Amount</label>
             <input type="number" id="deposit-amount" placeholder="Enter Amount">
-            <button class="btn btn-success" style="width:100%;" onclick="processDeposit()">Submit Deposit</button>
+            <label>Transaction ID (TrxID)</label>
+            <input type="text" id="deposit-trxid" placeholder="Enter bKash/Crypto TrxID">
+            <button class="btn btn-success" style="width:100%;" onclick="processDeposit()">Submit Deposit Request</button>
         </div>
     </div>
 
@@ -185,10 +221,8 @@
         <div class="modal-content" style="width: 500px;">
             <span class="modal-close" onclick="closeModal('purchase-success-modal')">&times;</span>
             <h3 style="color:#16a34a; margin-bottom:10px;"><i class="fas fa-check-circle"></i> Purchase Successful!</h3>
-            <p style="font-size:13px; color:gray; margin-bottom:10px;">Your account details are ready below:</p>
-            
-            <textarea id="purchased-data-text" rows="4" readonly style="background:#f8fafc; font-family:monospace;"></textarea>
-
+            <p style="font-size:13px; color:gray; margin-bottom:10px;">Your accounts/keys data is ready below:</p>
+            <textarea id="purchased-data-text" rows="5" readonly style="background:#f8fafc; font-family:monospace;"></textarea>
             <div style="display:flex; gap:10px; margin-top:10px;">
                 <button class="btn btn-primary" style="flex:1;" onclick="copyPurchasedData()"><i class="fas fa-copy"></i> Copy Data</button>
                 <button class="btn btn-success" style="flex:1;" onclick="downloadPurchasedData()"><i class="fas fa-download"></i> Download File</button>
@@ -196,7 +230,7 @@
         </div>
     </div>
 
-    <!-- Customer Dashboard Modal (Working Tabs & Details) -->
+    <!-- Customer Dashboard Modal -->
     <div id="user-modal" class="modal">
         <div class="modal-content dash-modal-layout">
             <div class="dash-sidebar">
@@ -207,24 +241,19 @@
                         <li id="u-tab-orders" onclick="switchUserTab('orders')"><i class="fas fa-shopping-bag"></i> My Orders</li>
                         <li id="u-tab-deposits" onclick="switchUserTab('deposits')"><i class="fas fa-wallet"></i> Deposit History</li>
                         <li id="u-tab-downloads" onclick="switchUserTab('downloads')"><i class="fas fa-download"></i> Downloads</li>
-                        <li id="u-tab-details" onclick="switchUserTab('details')"><i class="fas fa-user"></i> Account Details</li>
                     </ul>
                 </div>
                 <div style="padding: 0 20px;">
-                    <button class="btn btn-danger" style="width: 100%;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    <button class="btn btn-danger" style="width: 100%;" onclick="logout()">Logout</button>
                 </div>
             </div>
 
             <div class="dash-main">
                 <div class="dash-header">
-                    <div>
-                        <h2>Welcome back, <span id="u-dash-name">User</span>! 👋</h2>
-                        <p style="font-size: 13px; color: #64748b;">Manage your purchased products and balance.</p>
-                    </div>
-                    <button class="btn btn-danger" onclick="closeModal('user-modal')"><i class="fas fa-times"></i> Close</button>
+                    <h2>Welcome, <span id="u-dash-name">User</span>! 👋</h2>
+                    <button class="btn btn-danger" onclick="closeModal('user-modal')">Close</button>
                 </div>
 
-                <!-- Dashboard Tab -->
                 <div id="u-section-dash" class="u-tab-content">
                     <div class="stat-cards-grid">
                         <div class="stat-card">
@@ -244,53 +273,33 @@
                         <div class="stat-card">
                             <div class="stat-icon" style="background:#8b5cf6;"><i class="fas fa-wallet"></i></div>
                             <div>
-                                <span style="font-size:12px; color:#64748b;">Account Balance</span>
+                                <span style="font-size:12px; color:#64748b;">Balance</span>
                                 <h3 id="u-stat-bal" style="color:#8b5cf6;">$0.00</h3>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon" style="background:#f59e0b;"><i class="fas fa-calendar"></i></div>
-                            <div>
-                                <span style="font-size:12px; color:#64748b;">Member Since</span>
-                                <h4 id="u-stat-date" style="font-size:13px;">Date</h4>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Orders Tab -->
                 <div id="u-section-orders" class="u-tab-content" style="display:none;">
                     <div class="admin-card">
-                        <h4><i class="fas fa-shopping-bag"></i> My Purchased Orders</h4>
+                        <h4><i class="fas fa-shopping-bag"></i> My Orders</h4>
                         <div id="u-orders-table"></div>
                     </div>
                 </div>
 
-                <!-- Deposits Tab -->
                 <div id="u-section-deposits" class="u-tab-content" style="display:none;">
                     <div class="admin-card">
-                        <h4><i class="fas fa-wallet"></i> My Deposit History</h4>
+                        <h4><i class="fas fa-wallet"></i> Deposit History</h4>
                         <div id="u-deposits-table"></div>
                     </div>
                 </div>
 
-                <!-- Downloads Tab -->
                 <div id="u-section-downloads" class="u-tab-content" style="display:none;">
                     <div class="admin-card">
-                        <h4><i class="fas fa-download"></i> Download Center</h4>
+                        <h4><i class="fas fa-download"></i> Downloads</h4>
                         <div id="u-downloads-table"></div>
                     </div>
                 </div>
-
-                <!-- Account Details Tab -->
-                <div id="u-section-details" class="u-tab-content" style="display:none;">
-                    <div class="admin-card">
-                        <h4><i class="fas fa-user"></i> Account Profile</h4>
-                        <p><strong>Email:</strong> <span id="u-detail-email"></span></p>
-                        <p><strong>Joined:</strong> <span id="u-detail-joined"></span></p>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
@@ -302,21 +311,18 @@
                 <div>
                     <div class="brand">👑 Admin Panel</div>
                     <ul class="dash-menu">
-                        <li class="active"><i class="fas fa-th-large"></i> Dashboard</li>
+                        <li class="active"><i class="fas fa-th-large"></i> Control Center</li>
                     </ul>
                 </div>
                 <div style="padding: 0 20px;">
-                    <button class="btn btn-danger" style="width: 100%;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    <button class="btn btn-danger" style="width: 100%;" onclick="logout()">Logout</button>
                 </div>
             </div>
 
             <div class="dash-main">
                 <div class="dash-header">
-                    <div>
-                        <h2>Welcome back, Admin! 👋</h2>
-                        <p style="font-size: 13px; color: #64748b;">Manage listings, descriptions, images, and restock sold items.</p>
-                    </div>
-                    <button class="btn btn-danger" onclick="closeModal('admin-modal')"><i class="fas fa-times"></i> Close Dashboard</button>
+                    <h2>Admin Management Dashboard</h2>
+                    <button class="btn btn-danger" onclick="closeModal('admin-modal')">Close Dashboard</button>
                 </div>
 
                 <div class="stat-cards-grid">
@@ -334,64 +340,55 @@
                             <h3 id="stat-sales" style="color:#16a34a;">$0.00</h3>
                         </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background:#8b5cf6;"><i class="fas fa-box"></i></div>
-                        <div>
-                            <span style="font-size:12px; color:#64748b;">Active Listings</span>
-                            <h3 id="stat-listings">0</h3>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background:#f59e0b;"><i class="fas fa-list"></i></div>
-                        <div>
-                            <span style="font-size:12px; color:#64748b;">Total Categories</span>
-                            <h3 id="stat-categories">0</h3>
-                        </div>
-                    </div>
+                </div>
+
+                <!-- Admin Approve Deposit Requests Section -->
+                <div class="admin-card">
+                    <h4><i class="fas fa-clock"></i> Pending Deposit Requests (Confirm TrxID)</h4>
+                    <div id="admin-pending-deposits"></div>
                 </div>
 
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
                     <div class="admin-card">
-                        <h4><i class="fas fa-folder"></i> Category Management</h4>
-                        <div style="display:flex; gap:10px; margin-bottom:15px;">
-                            <input type="text" id="new-cat-input" placeholder="Category Name" style="margin:0;">
-                            <button class="btn btn-primary" onclick="addCategory()">Add</button>
-                        </div>
-                        <div id="admin-cat-list"></div>
+                        <h4><i class="fas fa-folder"></i> Add Category with Logo</h4>
+                        <input type="text" id="new-cat-name" placeholder="Category Name (e.g. Facebook)">
+                        <input type="text" id="new-cat-icon" placeholder="Category Logo/Icon URL">
+                        <button class="btn btn-primary" style="width:100%;" onclick="addCategory()">Add Category</button>
                     </div>
 
-                    <!-- Upload & Edit Stock with Gallery Image Picker -->
                     <div class="admin-card">
-                        <h4 id="form-title-heading"><i class="fas fa-cloud-upload-alt"></i> Upload / Restock Product</h4>
+                        <h4 id="form-title-heading"><i class="fas fa-cloud-upload-alt"></i> Listing / Restock Form</h4>
                         <input type="hidden" id="edit-prod-id">
                         <select id="prod-cat-select"></select>
                         <input type="text" id="prod-title" placeholder="Listing Title">
-                        <input type="text" id="prod-desc" placeholder="Product Description / Details">
-                        <input type="number" id="prod-price" placeholder="Price in USD (e.g. 0.50)">
-                        
-                        <label style="font-size:12px; font-weight:bold; color:gray;">Upload Image From Gallery:</label>
-                        <input type="file" id="prod-img-file" accept="image/*" onchange="previewFileImage(this)">
-                        <input type="hidden" id="prod-img-base64">
-
+                        <input type="text" id="prod-desc" placeholder="Product Description Details">
+                        <input type="number" id="prod-price" placeholder="Price in USD">
+                        <input type="text" id="prod-img" placeholder="Product Icon / Image URL">
                         <textarea id="prod-accounts" placeholder="Paste account stock data line by line" rows="3"></textarea>
-                        
-                        <div style="display:flex; gap:10px;">
-                            <button class="btn btn-success" style="flex:1;" onclick="saveProduct()">Save / Restock Product</button>
-                            <button class="btn btn-danger" style="display:none;" id="btn-cancel-edit" onclick="resetAdminForm()">Cancel</button>
-                        </div>
+                        <button class="btn btn-success" style="width:100%;" onclick="saveProduct()">Save Product</button>
                     </div>
                 </div>
 
                 <div class="admin-card">
-                    <h4><i class="fas fa-list-ul"></i> Active Product Listings (Edit & Delete)</h4>
-                    <div id="admin-listings-table" style="max-height:220px; overflow-y:auto;"></div>
+                    <h4><i class="fas fa-list-ul"></i> Active Product Listings</h4>
+                    <div id="admin-listings-table" style="max-height:200px; overflow-y:auto;"></div>
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <div class="admin-card">
-                    <h4><i class="fas fa-user-shield"></i> Registered Users</h4>
-                    <div id="admin-users-table" style="max-height:180px; overflow-y:auto;"></div>
-                </div>
-
+    <!-- Floating Live Chat Support System -->
+    <div class="chat-widget">
+        <button class="chat-btn-float" onclick="toggleChat()"><i class="fas fa-comments"></i> Live Support Chat</button>
+        <div class="chat-box" id="chat-box">
+            <div class="chat-header">
+                <span>💬 Live Support Chat</span>
+                <span style="cursor:pointer;" onclick="toggleChat()">&times;</span>
+            </div>
+            <div class="chat-body" id="chat-body"></div>
+            <div class="chat-footer">
+                <input type="text" id="chat-input" placeholder="Type a message..." style="margin:0;">
+                <button class="btn btn-primary" onclick="sendChatMessage()">Send</button>
             </div>
         </div>
     </div>
@@ -401,8 +398,8 @@
         let currentUserName = localStorage.getItem('userName') || '';
         let isAdminLoggedIn = localStorage.getItem('isAdmin') === 'true';
         let selectedCategory = 'All';
-        let currentViewMode = 'grid';
         let allProducts = [];
+        let allCategories = [];
         let currentPurchasedData = "";
 
         function showNotification(message, type = 'success') {
@@ -411,29 +408,6 @@
             toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
             document.getElementById('toast-container').appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
-        }
-
-        function togglePassword(inputId, icon) {
-            const input = document.getElementById(inputId);
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        }
-
-        function switchView(mode) {
-            currentViewMode = mode;
-            document.getElementById('btn-grid-view').classList.toggle('active', mode === 'grid');
-            document.getElementById('btn-list-view').classList.toggle('active', mode === 'list');
-            
-            const container = document.getElementById('product-list');
-            container.className = `product-container ${mode}-view`;
-            renderProducts();
         }
 
         function updateUI() {
@@ -476,10 +450,28 @@
                 body: JSON.stringify({ firstName, lastName, email, password, confirmPassword })
             });
             const data = await res.json();
-            
             if (data.success) {
                 showNotification(data.message, 'success');
                 closeModal('signup-modal');
+                openModal('login-modal');
+            } else {
+                showNotification(data.message, 'error');
+            }
+        }
+
+        async function resetPassword() {
+            const email = document.getElementById('forgot-email').value;
+            const newPassword = document.getElementById('forgot-new-pass').value;
+
+            const res = await fetch('/api/auth/forgot-password', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email, newPassword })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showNotification(data.message, 'success');
+                closeModal('forgot-modal');
                 openModal('login-modal');
             } else {
                 showNotification(data.message, 'error');
@@ -531,126 +523,9 @@
             showNotification('Logged out successfully!', 'success');
         }
 
-        function switchUserTab(tabName) {
-            document.querySelectorAll('.dash-sidebar .dash-menu li').forEach(li => li.classList.remove('active'));
-            document.querySelectorAll('.u-tab-content').forEach(div => div.style.display = 'none');
-
-            document.getElementById('u-tab-' + tabName).classList.add('active');
-            document.getElementById('u-section-' + tabName).style.display = 'block';
-        }
-
-        async function openUserDashboard(targetEmail = null) {
-            const emailToFetch = targetEmail || currentUser;
-            if (!emailToFetch) return;
-
-            const res = await fetch('/api/user/dashboard/' + emailToFetch);
-            const data = await res.json();
-
-            document.getElementById('u-dash-name').innerText = data.firstName;
-            document.getElementById('u-stat-orders').innerText = data.totalOrdersCount;
-            document.getElementById('u-stat-spent').innerText = '$' + data.totalSpent.toFixed(2);
-            document.getElementById('u-stat-bal').innerText = '$' + data.balance.toFixed(2);
-            document.getElementById('u-stat-date').innerText = data.memberSince || 'N/A';
-            document.getElementById('u-detail-email').innerText = data.email;
-            document.getElementById('u-detail-joined').innerText = data.memberSince || 'N/A';
-
-            // Recent Orders Table
-            let oHTML = `<table class="data-table"><tr><th>Order ID</th><th>Product</th><th>Price</th><th>Status</th></tr>`;
-            if (data.orders.length === 0) oHTML += `<tr><td colspan="4" style="text-align:center; color:gray;">No orders yet.</td></tr>`;
-            data.orders.forEach(o => {
-                oHTML += `<tr><td>${o.orderId}</td><td>${o.productTitle}</td><td>$${o.price}</td><td><span class="status-badge">Completed</span></td></tr>`;
-            });
-            document.getElementById('u-orders-table').innerHTML = oHTML + `</table>`;
-
-            // Deposit History Table
-            let dHTML = `<table class="data-table"><tr><th>TxID</th><th>Method</th><th>Amount</th><th>Status</th></tr>`;
-            if (data.deposits.length === 0) dHTML += `<tr><td colspan="4" style="text-align:center; color:gray;">No deposits yet.</td></tr>`;
-            data.deposits.forEach(d => {
-                dHTML += `<tr><td>${d.txId}</td><td>${d.method}</td><td>$${d.amount}</td><td><span class="status-badge">Completed</span></td></tr>`;
-            });
-            document.getElementById('u-deposits-table').innerHTML = dHTML + `</table>`;
-
-            // Downloads Table
-            let dwHTML = `<table class="data-table"><tr><th>Product</th><th>Data</th><th>Action</th></tr>`;
-            if (data.orders.length === 0) dwHTML += `<tr><td colspan="3" style="text-align:center; color:gray;">No downloads available.</td></tr>`;
-            data.orders.forEach(o => {
-                dwHTML += `<tr><td>${o.productTitle}</td><td><code>${o.accountData}</code></td><td><button class="btn btn-primary" style="padding:2px 8px; font-size:11px;" onclick="downloadSingleData('${o.accountData}')">Download</button></td></tr>`;
-            });
-            document.getElementById('u-downloads-table').innerHTML = dwHTML + `</table>`;
-
-            switchUserTab('dash');
-            openModal('user-modal');
-        }
-
-        function downloadSingleData(text) {
-            const blob = new Blob([text], { type: 'text/plain' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'account_data.txt';
-            a.click();
-        }
-
-        async function openAdminDashboard() {
-            fetchCategories();
-            const res = await fetch('/api/admin/analytics');
-            const data = await res.json();
-
-            document.getElementById('stat-users').innerText = data.totalUsers;
-            document.getElementById('stat-sales').innerText = '$' + data.todaySalesUSD;
-            document.getElementById('stat-listings').innerText = data.productsList.length;
-
-            let listHTML = `<table class="data-table"><tr><th>Title</th><th>Category</th><th>Stock</th><th>Action</th></tr>`;
-            data.productsList.forEach(p => {
-                listHTML += `<tr><td>${p.title}</td><td>${p.category}</td><td><strong>${p.stock.length}</strong> Pcs</td><td>
-                    <button class="btn btn-primary" style="padding:2px 8px; font-size:11px;" onclick="editProduct(${p.id})">Edit / Restock</button>
-                    <button class="btn btn-danger" style="padding:2px 8px; font-size:11px;" onclick="deleteProduct(${p.id})">Delete</button>
-                </td></tr>`;
-            });
-            document.getElementById('admin-listings-table').innerHTML = listHTML + `</table>`;
-
-            let userHTML = `<table class="data-table"><tr><th>Name</th><th>Email</th><th>Balance</th><th>Action</th></tr>`;
-            data.usersList.forEach(u => {
-                userHTML += `<tr><td>${u.firstName} ${u.lastName}</td><td>${u.email}</td><td style="color:#16a34a; font-weight:bold;">$${u.balanceUSD.toFixed(2)}</td><td><button class="btn btn-primary" style="padding:2px 8px; font-size:11px;" onclick="openUserDashboard('${u.email}')">View Dashboard</button></td></tr>`;
-            });
-            document.getElementById('admin-users-table').innerHTML = userHTML + `</table>`;
-
-            openModal('admin-modal');
-        }
-
-        async function fetchBalance() {
-            if (!currentUser) return;
-            const res = await fetch('/api/user/dashboard/' + currentUser);
-            const data = await res.json();
-            document.getElementById('user-balance').innerText = '$' + data.balance.toFixed(2);
-        }
-
-        async function processDeposit() {
-            const method = document.getElementById('deposit-method').value;
-            const amount = document.getElementById('deposit-amount').value;
-
-            if (!currentUser) return showNotification('Please login first!', 'error');
-            if (!amount || amount <= 0) return showNotification('Enter valid amount!', 'error');
-
-            const res = await fetch('/api/deposit', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ email: currentUser, method, amount: parseFloat(amount) })
-            });
-            const data = await res.json();
-            if (data.success) {
-                showNotification(data.message, 'success');
-                fetchBalance();
-                closeModal('deposit-modal');
-            } else {
-                showNotification(data.message, 'error');
-            }
-        }
-
         async function fetchCategories() {
             const res = await fetch('/api/categories');
-            const categories = await res.json();
-            
-            document.getElementById('stat-categories').innerText = categories.length;
+            allCategories = await res.json();
 
             const catBar = document.getElementById('category-bar');
             catBar.innerHTML = `<div class="cat-btn ${selectedCategory === 'All' ? 'active' : ''}" onclick="filterCategory('All')">All Categories</div>`;
@@ -658,14 +533,15 @@
             const select = document.getElementById('prod-cat-select');
             if (select) select.innerHTML = '';
 
-            categories.forEach(cat => {
-                catBar.innerHTML += `<div class="cat-btn ${selectedCategory === cat ? 'active' : ''}" onclick="filterCategory('${cat}')">${cat}</div>`;
-                if (select) select.innerHTML += `<option value="${cat}">${cat}</option>`;
+            allCategories.forEach(cat => {
+                const iconHTML = cat.icon ? `<img src="${cat.icon}" style="width:16px; height:16px;">` : '';
+                catBar.innerHTML += `<div class="cat-btn ${selectedCategory === cat.name ? 'active' : ''}" onclick="filterCategory('${cat.name}')">${iconHTML} ${cat.name}</div>`;
+                if (select) select.innerHTML += `<option value="${cat.name}">${cat.name}</option>`;
             });
         }
 
-        function filterCategory(cat) {
-            selectedCategory = cat;
+        function filterCategory(catName) {
+            selectedCategory = catName;
             fetchCategories();
             renderProducts();
         }
@@ -676,40 +552,119 @@
             renderProducts();
         }
 
+        // Render Row Layout Exact Replica from Image
         function renderProducts() {
-            const container = document.getElementById('product-list');
-            container.innerHTML = '';
-            const filtered = selectedCategory === 'All' ? allProducts : allProducts.filter(p => p.category === selectedCategory);
+            const wrapper = document.getElementById('products-wrapper');
+            wrapper.innerHTML = '';
 
-            filtered.forEach(p => {
-                const img = p.imageUrl || 'https://via.placeholder.com/300x150?text=Product+Image';
-                const desc = p.description ? `<p style="font-size:12px; color:#6b7280; margin:4px 0;">${p.description}</p>` : '';
+            const categoriesToDisplay = selectedCategory === 'All' 
+                ? allCategories.map(c => c.name) 
+                : [selectedCategory];
 
-                container.innerHTML += `
-                    <div class="product-card">
-                        <img src="${img}" class="product-img" alt="${p.title}">
-                        <div class="product-body">
-                            <span style="font-size:11px; color:#2563eb; font-weight:bold;">[${p.category}]</span>
-                            <h4 style="margin:4px 0;">${p.title}</h4>
-                            ${desc}
-                            <p style="font-size:12px; color:gray;">Available Stock: <strong>${p.stockCount}</strong> Pcs</p>
-                            <h3 style="color:#16a34a; margin:4px 0;">$${p.price.toFixed(2)}</h3>
-                            <button class="btn btn-primary" style="width:100%; margin-top:8px;" onclick="buyProduct(${p.id})">Buy Now</button>
+            categoriesToDisplay.forEach(catName => {
+                const categoryProds = allProducts.filter(p => p.category === catName);
+                if (categoryProds.length === 0) return;
+
+                const catObj = allCategories.find(c => c.name === catName) || {};
+                let itemsHTML = '';
+
+                categoryProds.forEach(p => {
+                    const icon = p.imageUrl || catObj.icon || 'https://via.placeholder.com/32';
+                    itemsHTML += `
+                        <div class="row-item">
+                            <div class="row-left" onclick="showDescription('${p.title.replace(/'/g, "\\'")}', '${(p.description || 'No additional description.').replace(/'/g, "\\'")}')">
+                                <img src="${icon}" class="row-icon" alt="icon">
+                                <span class="row-title">${p.title}</span>
+                            </div>
+                            <div class="row-mid">
+                                <div>
+                                    <span class="stock-text">${p.stockCount} pcs.</span>
+                                    <span class="sold-text">Sold ${p.soldCount} pieces</span>
+                                </div>
+                                <div>
+                                    <span class="price-text">Price per pc</span>
+                                    <div class="price-amount">from $${p.price.toFixed(2)}</div>
+                                </div>
+                                <button class="btn btn-buy" onclick="openBuyModal(${p.id})"><i class="fas fa-shopping-cart"></i> Buy</button>
+                            </div>
                         </div>
+                    `;
+                });
+
+                wrapper.innerHTML += `
+                    <div class="category-block">
+                        <div class="category-header">${catName} Accounts</div>
+                        ${itemsHTML}
                     </div>
                 `;
             });
         }
 
-        function previewFileImage(input) {
-            const file = input.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('prod-img-base64').value = e.target.result;
-                };
-                reader.readAsDataURL(file);
+        function showDescription(title, body) {
+            document.getElementById('desc-title').innerText = title;
+            document.getElementById('desc-body').innerText = body;
+            openModal('desc-modal');
+        }
+
+        function openBuyModal(productId) {
+            if (!currentUser) return showNotification('Please login first!', 'error');
+            const p = allProducts.find(item => item.id === productId);
+            if (!p) return;
+
+            document.getElementById('buy-prod-id').value = p.id;
+            document.getElementById('buy-title').innerText = p.title;
+            document.getElementById('buy-unit-price').innerText = p.price.toFixed(2);
+            document.getElementById('buy-qty').value = 1;
+            calculateBuyTotal();
+            openModal('buy-modal');
+        }
+
+        function calculateBuyTotal() {
+            const unitPrice = parseFloat(document.getElementById('buy-unit-price').innerText);
+            const qty = parseInt(document.getElementById('buy-qty').value) || 1;
+            const total = unitPrice * qty;
+            document.getElementById('buy-total-calc').innerText = '$' + total.toFixed(2) + ' USD';
+        }
+
+        async function confirmPurchase() {
+            const productId = parseInt(document.getElementById('buy-prod-id').value);
+            const quantity = parseInt(document.getElementById('buy-qty').value);
+
+            const res = await fetch('/api/buy', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email: currentUser, productId, quantity })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                currentPurchasedData = data.order.accountData;
+                document.getElementById('purchased-data-text').value = currentPurchasedData;
+                closeModal('buy-modal');
+                fetchBalance();
+                fetchProducts();
+                openModal('purchase-success-modal');
+            } else {
+                showNotification(data.message, 'error');
             }
+        }
+
+        async function addCategory() {
+            const name = document.getElementById('new-cat-name').value;
+            const icon = document.getElementById('new-cat-icon').value;
+            if (!name) return showNotification('Enter category name!', 'error');
+
+            await fetch('/api/admin/add-category', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ name, icon })
+            });
+
+            showNotification('Category added!', 'success');
+            document.getElementById('new-cat-name').value = '';
+            document.getElementById('new-cat-icon').value = '';
+            fetchCategories();
+            openAdminDashboard();
         }
 
         async function saveProduct() {
@@ -718,7 +673,7 @@
             const title = document.getElementById('prod-title').value;
             const description = document.getElementById('prod-desc').value;
             const price = document.getElementById('prod-price').value;
-            const imageUrl = document.getElementById('prod-img-base64').value;
+            const imageUrl = document.getElementById('prod-img').value;
             const accounts = document.getElementById('prod-accounts').value;
 
             if (!title || !price) return showNotification('Fill title and price!', 'error');
@@ -729,80 +684,157 @@
                 body: JSON.stringify({ id, title, description, category, imageUrl, price, accounts })
             });
 
-            showNotification('Listing saved / restocked successfully!', 'success');
-            resetAdminForm();
+            showNotification('Listing saved successfully!', 'success');
             openAdminDashboard();
             fetchProducts();
         }
 
-        function editProduct(id) {
-            const p = allProducts.find(item => item.id === id);
-            if (!p) return;
+        async function openAdminDashboard() {
+            fetchCategories();
+            const res = await fetch('/api/admin/analytics');
+            const data = await res.json();
 
-            document.getElementById('edit-prod-id').value = p.id;
-            document.getElementById('prod-title').value = p.title;
-            document.getElementById('prod-desc').value = p.description || '';
-            document.getElementById('prod-price').value = p.price;
-            document.getElementById('prod-accounts').value = ''; // Paste new accounts for restock
-            document.getElementById('form-title-heading').innerText = "✏️ Edit / Restock: " + p.title;
-            document.getElementById('btn-cancel-edit').style.display = 'inline-block';
-            showNotification('Loaded for editing. Paste new stock below to restock!', 'success');
+            document.getElementById('stat-users').innerText = data.totalUsers;
+            document.getElementById('stat-sales').innerText = '$' + data.todaySalesUSD;
+
+            // Render Pending Deposit Requests for Admin Approval
+            let depHTML = `<table class="data-table"><tr><th>User Email</th><th>TrxID</th><th>Method</th><th>Amount</th><th>Action</th></tr>`;
+            if (data.pendingDeposits.length === 0) depHTML += `<tr><td colspan="5" style="text-align:center; color:gray;">No pending deposits.</td></tr>`;
+            data.pendingDeposits.forEach(d => {
+                depHTML += `<tr><td>${d.email}</td><td><code>${d.txId}</code></td><td>${d.method}</td><td>$${d.amount}</td><td><button class="btn btn-success" style="padding:2px 8px; font-size:11px;" onclick="approveDeposit(${d.id})">Confirm & Approve</button></td></tr>`;
+            });
+            document.getElementById('admin-pending-deposits').innerHTML = depHTML + `</table>`;
+
+            // Listings Table
+            let listHTML = `<table class="data-table"><tr><th>Title</th><th>Category</th><th>Stock</th><th>Action</th></tr>`;
+            data.productsList.forEach(p => {
+                listHTML += `<tr><td>${p.title}</td><td>${p.category}</td><td>${p.stock.length}</td><td><button class="btn btn-danger" style="padding:2px 8px; font-size:11px;" onclick="deleteProduct(${p.id})">Delete</button></td></tr>`;
+            });
+            document.getElementById('admin-listings-table').innerHTML = listHTML + `</table>`;
+
+            openModal('admin-modal');
         }
 
-        function resetAdminForm() {
-            document.getElementById('edit-prod-id').value = '';
-            document.getElementById('prod-title').value = '';
-            document.getElementById('prod-desc').value = '';
-            document.getElementById('prod-price').value = '';
-            document.getElementById('prod-img-file').value = '';
-            document.getElementById('prod-img-base64').value = '';
-            document.getElementById('prod-accounts').value = '';
-            document.getElementById('form-title-heading').innerText = "☁️ Upload / Restock Product";
-            document.getElementById('btn-cancel-edit').style.display = 'none';
-        }
-
-        async function deleteProduct(id) {
-            if (confirm('Delete this listing?')) {
-                await fetch('/api/admin/delete-product/' + id, { method: 'DELETE' });
-                showNotification('Listing deleted!', 'success');
+        async function approveDeposit(depositId) {
+            const res = await fetch('/api/admin/approve-deposit', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ depositId })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showNotification(data.message, 'success');
                 openAdminDashboard();
-                fetchProducts();
             }
         }
 
-        async function buyProduct(id) {
-            if (!currentUser) return showNotification('Please login first!', 'error');
+        async function processDeposit() {
+            const method = document.getElementById('deposit-method').value;
+            const amount = document.getElementById('deposit-amount').value;
+            const trxId = document.getElementById('deposit-trxid').value;
 
-            const res = await fetch('/api/buy', {
+            if (!currentUser) return showNotification('Please login first!', 'error');
+            if (!amount || !trxId) return showNotification('Amount & TrxID required!', 'error');
+
+            const res = await fetch('/api/deposit', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ email: currentUser, productId: id })
+                body: JSON.stringify({ email: currentUser, method, amount: parseFloat(amount), trxId })
             });
             const data = await res.json();
-
             if (data.success) {
-                currentPurchasedData = data.order.accountData;
-                document.getElementById('purchased-data-text').value = currentPurchasedData;
-                fetchBalance();
-                fetchProducts();
-                openModal('purchase-success-modal');
+                showNotification(data.message, 'success');
+                closeModal('deposit-modal');
             } else {
                 showNotification(data.message, 'error');
             }
         }
 
+        async function fetchBalance() {
+            if (!currentUser) return;
+            const res = await fetch('/api/user/dashboard/' + currentUser);
+            const data = await res.json();
+            document.getElementById('user-balance').innerText = '$' + data.balance.toFixed(2);
+        }
+
+        function switchUserTab(tabName) {
+            document.querySelectorAll('.dash-sidebar .dash-menu li').forEach(li => li.classList.remove('active'));
+            document.querySelectorAll('.u-tab-content').forEach(div => div.style.display = 'none');
+            document.getElementById('u-tab-' + tabName).classList.add('active');
+            document.getElementById('u-section-' + tabName).style.display = 'block';
+        }
+
+        async function openUserDashboard() {
+            if (!currentUser) return;
+            const res = await fetch('/api/user/dashboard/' + currentUser);
+            const data = await res.json();
+
+            document.getElementById('u-dash-name').innerText = data.firstName;
+            document.getElementById('u-stat-orders').innerText = data.totalOrdersCount;
+            document.getElementById('u-stat-spent').innerText = '$' + data.totalSpent.toFixed(2);
+            document.getElementById('u-stat-bal').innerText = '$' + data.balance.toFixed(2);
+
+            let oHTML = `<table class="data-table"><tr><th>Order ID</th><th>Product</th><th>Qty</th><th>Price</th></tr>`;
+            data.orders.forEach(o => { oHTML += `<tr><td>${o.orderId}</td><td>${o.productTitle}</td><td>${o.quantity || 1}</td><td>$${o.price}</td></tr>`; });
+            document.getElementById('u-orders-table').innerHTML = oHTML + `</table>`;
+
+            let dHTML = `<table class="data-table"><tr><th>TrxID</th><th>Method</th><th>Amount</th><th>Status</th></tr>`;
+            data.deposits.forEach(d => { dHTML += `<tr><td>${d.txId}</td><td>${d.method}</td><td>$${d.amount}</td><td><span class="status-badge ${d.status === 'Pending' ? 'status-pending' : ''}">${d.status}</span></td></tr>`; });
+            document.getElementById('u-deposits-table').innerHTML = dHTML + `</table>`;
+
+            switchUserTab('dash');
+            openModal('user-modal');
+        }
+
+        // Live Chat Toggle & Fetch
+        function toggleChat() {
+            const box = document.getElementById('chat-box');
+            box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
+            if (box.style.display === 'flex') fetchChatMessages();
+        }
+
+        async function fetchChatMessages() {
+            if (!currentUser && !isAdminLoggedIn) return;
+            const targetEmail = isAdminLoggedIn ? 'sean.storr75@gmail.com' : currentUser;
+            const res = await fetch('/api/chat/messages/' + targetEmail);
+            const msgs = await res.json();
+
+            const body = document.getElementById('chat-body');
+            body.innerHTML = '';
+            msgs.forEach(m => {
+                const isMe = m.sender === (currentUser || 'Admin');
+                body.innerHTML += `<div class="chat-msg ${isMe ? 'me' : 'other'}"><strong>${m.sender}:</strong> ${m.message}</div>`;
+            });
+        }
+
+        async function sendChatMessage() {
+            const text = document.getElementById('chat-input').value;
+            if (!text) return;
+
+            const sender = isAdminLoggedIn ? 'Admin' : (currentUserName || 'User');
+            const userEmail = currentUser || 'sean.storr75@gmail.com';
+
+            await fetch('/api/chat/send', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ sender, receiver: 'Support', message: text, userEmail })
+            });
+
+            document.getElementById('chat-input').value = '';
+            fetchChatMessages();
+        }
+
         function copyPurchasedData() {
             navigator.clipboard.writeText(currentPurchasedData);
-            showNotification('Data copied to clipboard!', 'success');
+            showNotification('Data copied!', 'success');
         }
 
         function downloadPurchasedData() {
             const blob = new Blob([currentPurchasedData], { type: 'text/plain' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = 'purchased_account_' + Date.now() + '.txt';
+            a.download = 'accounts_' + Date.now() + '.txt';
             a.click();
-            showNotification('Download started!', 'success');
         }
 
         updateUI();
