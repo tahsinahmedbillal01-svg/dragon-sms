@@ -10,20 +10,15 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Temporary In-Memory Database
 let categories = ['Outlook', 'Gmail', 'Facebook'];
 let products = [];
 let users = [];
 let orders = [];
 
-// Blocked Temp Email Domains
 const tempEmailDomains = ['mailinator.com', '10minutemail.com', 'tempmail.com', 'guerrillamail.com', 'throwawaymail.com', 'yopmail.com', 'tempmailo.com'];
-
-// Admin Auth Credentials
 const ADMIN_EMAIL = "sean.storr75@gmail.com";
 const ADMIN_PASS = "Alex@123tt";
 
-// Helper Functions
 function isTempEmail(email) {
     const domain = email.split('@')[1];
     return tempEmailDomains.includes(domain ? domain.toLowerCase() : '');
@@ -40,7 +35,7 @@ app.post('/api/auth/signup', (req, res) => {
         return res.status(400).json({ success: false, message: 'Passwords do not match!' });
     }
     if (isTempEmail(email)) {
-        return res.status(400).json({ success: false, message: 'Temporary emails are not allowed! Use an original email.' });
+        return res.status(400).json({ success: false, message: 'Temporary emails are not allowed!' });
     }
     if (users.find(u => u.email === email)) {
         return res.status(400).json({ success: false, message: 'Email already registered!' });
@@ -51,13 +46,12 @@ app.post('/api/auth/signup', (req, res) => {
     res.json({ success: true, message: 'Account registered successfully!' });
 });
 
-// User & Admin Login
+// Login
 app.post('/api/auth/login', (req, res) => {
     const { email, password } = req.body;
 
-    // Check if Admin
     if (email === ADMIN_EMAIL && password === ADMIN_PASS) {
-        return res.json({ success: true, isAdmin: true, message: 'Welcome to Admin Dashboard!' });
+        return res.json({ success: true, isAdmin: true, message: 'Welcome to Admin Control Panel!' });
     }
 
     const user = users.find(u => u.email === email && u.password === password);
@@ -73,24 +67,38 @@ app.post('/api/auth/login', (req, res) => {
     });
 });
 
-// Admin Stats Endpoint
-app.get('/api/admin/stats', (req, res) => {
+// Admin Analytics API
+app.get('/api/admin/analytics', (req, res) => {
     const today = new Date().toLocaleDateString();
     
-    // Calculate Today's Sales
     const todaySales = orders
         .filter(o => new Date(o.rawDate).toLocaleDateString() === today)
         .reduce((sum, o) => sum + o.price, 0);
+
+    // Category Sales Breakdown
+    const categorySales = {};
+    categories.forEach(cat => { categorySales[cat] = { amount: 0, count: 0 }; });
+    
+    orders.forEach(o => {
+        if (!categorySales[o.category]) {
+            categorySales[o.category] = { amount: 0, count: 0 };
+        }
+        categorySales[o.category].amount += o.price;
+        categorySales[o.category].count += 1;
+    });
 
     res.json({
         totalUsers: users.length,
         todaySalesUSD: todaySales.toFixed(2),
         totalSoldProducts: orders.length,
-        soldProductsList: orders
+        categorySales,
+        usersList: users.map(u => ({ firstName: u.firstName, lastName: u.lastName, email: u.email, balance: u.balanceUSD })),
+        ordersList: orders,
+        productsList: products
     });
 });
 
-// Categories & Products APIs
+// Categories & Listings APIs
 app.get('/api/categories', (req, res) => res.json(categories));
 
 app.post('/api/admin/add-category', (req, res) => {
@@ -134,9 +142,19 @@ app.get('/api/products', (req, res) => {
     res.json(safeProducts);
 });
 
-app.get('/api/user/balance/:email', (req, res) => {
+app.get('/api/user/dashboard/:email', (req, res) => {
     const user = users.find(u => u.email === req.params.email);
-    res.json({ balance: user ? user.balanceUSD : 0 });
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    const userOrders = orders.filter(o => o.email === req.params.email);
+    res.json({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        balance: user.balanceUSD,
+        totalPurchased: userOrders.length,
+        orders: userOrders
+    });
 });
 
 app.post('/api/deposit', (req, res) => {
@@ -157,7 +175,7 @@ app.post('/api/buy', (req, res) => {
 
     if (!user) return res.status(400).json({ success: false, message: 'User not logged in!' });
     if (!product || product.stock.length === 0) return res.status(400).json({ success: false, message: 'Out of stock!' });
-    if (user.balanceUSD < product.price) return res.status(400).json({ success: false, message: 'Insufficient balance! Please deposit.' });
+    if (user.balanceUSD < product.price) return res.status(400).json({ success: false, message: 'Insufficient balance!' });
 
     user.balanceUSD -= product.price;
     const deliveredAccount = product.stock.shift();
@@ -166,6 +184,7 @@ app.post('/api/buy', (req, res) => {
         orderId: 'ORD-' + Date.now(),
         email,
         productTitle: product.title,
+        category: product.category,
         accountData: deliveredAccount,
         price: product.price,
         rawDate: new Date(),
@@ -174,11 +193,6 @@ app.post('/api/buy', (req, res) => {
     orders.push(order);
 
     res.json({ success: true, message: 'Purchase successful!', account: deliveredAccount, balance: user.balanceUSD });
-});
-
-app.get('/api/orders/:email', (req, res) => {
-    const userOrders = orders.filter(o => o.email === req.params.email);
-    res.json(userOrders);
 });
 
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
