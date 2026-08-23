@@ -22,7 +22,6 @@
         .btn-success { background: #16a34a; color: #fff; }
         .btn-danger { background: #dc2626; color: #fff; }
         .btn-buy { background: #d97706; color: #fff; padding: 8px 18px; border-radius: 5px; font-weight: bold; }
-        .btn-buy:hover { background: #b45309; }
         
         #toast-container { position: fixed; top: 20px; right: 20px; z-index: 1000; }
         .toast { padding: 12px 20px; border-radius: 6px; color: #fff; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
@@ -33,44 +32,28 @@
         .cat-btn { padding: 6px 14px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; color: #475569; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
         .cat-btn.active { background: #2563eb; color: white; border-color: #2563eb; }
 
-        .view-toggle { margin-left: auto; display: flex; gap: 5px; background: #e2e8f0; padding: 4px; border-radius: 6px; }
-        .view-btn { padding: 6px 12px; border-radius: 4px; cursor: pointer; color: #475569; font-size: 13px; }
-        .view-btn.active { background: #fff; color: #2563eb; font-weight: bold; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-
         .container { padding: 20px 5%; }
         .balance-card { background: #fff; padding: 18px 24px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #e2e8f0; }
 
         .category-block { margin-bottom: 25px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
         .category-header { background: #1e293b; color: #fff; padding: 12px 20px; font-weight: bold; font-size: 16px; }
 
-        /* Row Format */
         .row-item { background: #fff; padding: 14px 20px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; gap: 15px; }
         .row-left { display: flex; align-items: center; gap: 15px; flex: 1; cursor: pointer; }
         .row-icon { width: 32px; height: 32px; object-fit: contain; }
         .row-title { font-weight: 600; font-size: 14px; color: #1e293b; }
-        .row-title:hover { color: #2563eb; text-decoration: underline; }
         .row-mid { display: flex; gap: 30px; align-items: center; text-align: right; }
 
-        /* Grid / Box Format */
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; padding: 15px; background: #fff; }
-        .grid-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; background: #f8fafc; transition: 0.2s; }
-        .grid-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .grid-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; cursor: pointer; }
-        .grid-card-img { width: 40px; height: 40px; object-fit: contain; border-radius: 6px; }
+        /* Password Input Wrapper with Eye Toggle */
+        .password-wrapper { position: relative; width: 100%; }
+        .password-wrapper input { width: 100%; padding-right: 35px; }
+        .password-wrapper .toggle-eye { position: absolute; right: 10px; top: 35%; transform: translateY(-50%); cursor: pointer; color: #64748b; }
 
         /* Modals */
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:999; }
         .modal-content { background:#fff; padding:25px; border-radius:10px; width:450px; max-height:90vh; overflow-y:auto; position: relative; }
         .modal-close { position: absolute; top: 15px; right: 18px; font-size: 22px; cursor: pointer; color: #6b7280; font-weight: bold; }
         .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:10px; margin:6px 0 12px 0; border:1px solid #cbd5e1; border-radius:6px; font-size: 14px; }
-
-        .dash-modal-layout { width: 95vw; height: 92vh; max-width: 1400px; padding: 0; display: flex; overflow: hidden; border-radius: 12px; }
-        .dash-sidebar { width: 230px; background: #0f172a; color: #fff; padding: 20px 0; display: flex; flex-direction: column; justify-content: space-between; }
-        .dash-sidebar .brand { padding: 0 20px 20px; font-size: 18px; font-weight: bold; border-bottom: 1px solid #1e293b; }
-        .dash-menu { list-style: none; margin-top: 15px; }
-        .dash-menu li { padding: 12px 20px; cursor: pointer; font-size: 14px; color: #94a3b8; display: flex; align-items: center; gap: 10px; }
-        .dash-menu li.active, .dash-menu li:hover { background: #2563eb; color: #fff; }
-        .dash-main { flex: 1; background: #f8fafc; padding: 20px; overflow-y: auto; }
 
         .admin-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px; margin-bottom: 20px; }
         .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -79,12 +62,12 @@
         /* Floating Live Chat */
         .chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
         .chat-btn-float { background: #2563eb; color: #fff; padding: 12px 20px; border-radius: 30px; font-weight: bold; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .chat-box { display: none; width: 320px; height: 400px; background: #fff; border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); flex-direction: column; position: absolute; bottom: 60px; right: 0; }
+        .chat-box { display: none; width: 340px; height: 420px; background: #fff; border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); flex-direction: column; position: absolute; bottom: 60px; right: 0; }
         .chat-header { background: #2563eb; color: #fff; padding: 12px 15px; font-weight: bold; display: flex; justify-content: space-between; }
         .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #f8fafc; font-size: 13px; }
-        .chat-msg { margin-bottom: 10px; padding: 8px 12px; border-radius: 8px; max-width: 80%; }
-        .chat-msg.me { background: #2563eb; color: #fff; margin-left: auto; }
-        .chat-msg.other { background: #e2e8f0; color: #1e293b; }
+        .chat-msg { margin-bottom: 10px; padding: 8px 12px; border-radius: 8px; max-width: 80%; font-size: 13px; }
+        .chat-msg.me { background: #2563eb; color: #fff; margin-left: auto; border-bottom-right-radius: 0; }
+        .chat-msg.other { background: #e2e8f0; color: #1e293b; margin-right: auto; border-bottom-left-radius: 0; }
         .chat-footer { padding: 10px; display: flex; gap: 5px; background: #fff; border-top: 1px solid #e2e8f0; }
     </style>
 </head>
@@ -94,18 +77,15 @@
 
     <header>
         <div class="logo">🐉 DRAGON SMS</div>
-        
-        <!-- Search Option -->
         <div class="search-box">
             <i class="fas fa-search"></i>
-            <input type="text" id="search-input" placeholder="Search account or product..." onkeyup="filterProductsBySearch()">
+            <input type="text" id="search-input" placeholder="Search account..." onkeyup="renderProducts()">
         </div>
 
         <div class="user-panel">
             <span id="user-display" style="font-weight: 600; color: #475569;">Not Logged In</span>
             <button class="btn btn-primary" id="login-btn" onclick="openModal('login-modal')">Login</button>
             <button class="btn btn-success" id="signup-btn" onclick="openModal('signup-modal')">Sign Up</button>
-            <button class="btn btn-primary" id="dashboard-btn" style="display:none;" onclick="openUserDashboard()">Dashboard</button>
             <button class="btn btn-danger" id="logout-btn" style="display:none;" onclick="logout()">Logout</button>
             <button class="btn btn-success" onclick="openModal('deposit-modal')">Deposit</button>
         </div>
@@ -113,12 +93,6 @@
 
     <div class="cat-bar">
         <div id="category-bar" style="display:flex; gap:10px;"></div>
-        
-        <!-- View Mode Switcher -->
-        <div class="view-toggle">
-            <div class="view-btn" id="btn-view-row" onclick="setProductView('row')"><i class="fas fa-list"></i> Row</div>
-            <div class="view-btn" id="btn-view-grid" onclick="setProductView('grid')"><i class="fas fa-th-large"></i> Box</div>
-        </div>
     </div>
 
     <div class="container">
@@ -132,56 +106,23 @@
         <div id="products-wrapper"></div>
     </div>
 
-    <!-- Enhanced Description Modal with Integrated Buy Button -->
-    <div id="desc-modal" class="modal">
-        <div class="modal-content" style="width:500px;">
-            <span class="modal-close" onclick="closeModal('desc-modal')">&times;</span>
-            <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
-                <img id="desc-img" src="" style="width:50px; height:50px; object-fit:contain; border-radius:8px;">
-                <div>
-                    <h3 id="desc-title" style="color:#1e293b; font-size:16px;">Product Title</h3>
-                    <span style="font-size:12px; color:#64748b;" id="desc-price-tag">Price: $0.00</span>
-                </div>
-            </div>
-            <div style="background:#f8fafc; padding:15px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:15px;">
-                <h4 style="font-size:13px; color:#475569; margin-bottom:5px;">Description:</h4>
-                <p id="desc-body" style="font-size: 14px; color:#334155; line-height: 1.6; white-space: pre-line;"></p>
-            </div>
-            <button class="btn btn-buy" style="width:100%; font-size:15px;" id="desc-buy-btn"><i class="fas fa-shopping-cart"></i> Buy Now</button>
-        </div>
-    </div>
-
-    <!-- Buy Modal -->
-    <div id="buy-modal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeModal('buy-modal')">&times;</span>
-            <h3 id="buy-title" style="margin-bottom: 10px;">Buy Product</h3>
-            <p style="font-size:13px; color:gray;">Price per pc: $<span id="buy-unit-price">0.00</span></p>
-            <input type="hidden" id="buy-prod-id">
-            
-            <label style="margin-top:10px; font-weight:bold;">Quantity:</label>
-            <input type="number" id="buy-qty" value="1" min="1" oninput="calculateBuyTotal()">
-
-            <div style="background:#f1f5f9; padding:12px; border-radius:6px; margin-bottom:15px;">
-                <span style="font-size:14px; color:#475569;">Total Price:</span>
-                <h3 style="color:#16a34a;" id="buy-total-calc">$0.00 USD</h3>
-            </div>
-
-            <button class="btn btn-buy" style="width:100%;" onclick="confirmPurchase()">Confirm Purchase</button>
-        </div>
-    </div>
-
-    <!-- Login/Signup Modals -->
+    <!-- Login Modal -->
     <div id="login-modal" class="modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal('login-modal')">&times;</span>
             <h3 style="margin-bottom: 15px;">Login</h3>
-            <label>Email</label><input type="email" id="login-email">
-            <label>Password</label><input type="password" id="login-pass">
-            <button class="btn btn-primary" style="width:100%; margin-top:5px;" onclick="login()">Login</button>
+            <label>Email</label>
+            <input type="email" id="login-email">
+            <label>Password</label>
+            <div class="password-wrapper">
+                <input type="password" id="login-pass">
+                <i class="fas fa-eye toggle-eye" onclick="togglePasswordVisibility('login-pass', this)"></i>
+            </div>
+            <button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="login()">Login</button>
         </div>
     </div>
 
+    <!-- Sign Up Modal with Password View Eye Icon -->
     <div id="signup-modal" class="modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal('signup-modal')">&times;</span>
@@ -189,12 +130,24 @@
             <label>First Name</label><input type="text" id="signup-fn">
             <label>Last Name</label><input type="text" id="signup-ln">
             <label>Email</label><input type="email" id="signup-email">
-            <label>Password</label><input type="password" id="signup-pass">
-            <label>Confirm Password</label><input type="password" id="signup-cpass">
+            
+            <label>Password</label>
+            <div class="password-wrapper">
+                <input type="password" id="signup-pass">
+                <i class="fas fa-eye toggle-eye" onclick="togglePasswordVisibility('signup-pass', this)"></i>
+            </div>
+
+            <label>Confirm Password</label>
+            <div class="password-wrapper">
+                <input type="password" id="signup-cpass">
+                <i class="fas fa-eye toggle-eye" onclick="togglePasswordVisibility('signup-cpass', this)"></i>
+            </div>
+
             <button class="btn btn-success" style="width:100%; margin-top:10px;" onclick="signup()">Sign Up</button>
         </div>
     </div>
 
+    <!-- Deposit Modal -->
     <div id="deposit-modal" class="modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal('deposit-modal')">&times;</span>
@@ -204,107 +157,37 @@
                 <option value="bkash">bKash (120 BDT = 1 USD)</option>
                 <option value="crypto">Crypto / USDT</option>
             </select>
-            <label>Amount</label><input type="number" id="deposit-amount">
-            <label>Transaction ID (TrxID)</label><input type="text" id="deposit-trxid">
+            <label>Amount (BDT / USDT)</label>
+            <input type="number" id="deposit-amount" placeholder="e.g. 1200 or 10">
+            <label>Transaction ID (TrxID)</label>
+            <input type="text" id="deposit-trxid" placeholder="Paste bKash TrxID or Hash">
             <button class="btn btn-success" style="width:100%;" onclick="processDeposit()">Submit Deposit</button>
-        </div>
-    </div>
-
-    <div id="purchase-success-modal" class="modal">
-        <div class="modal-content" style="width: 500px;">
-            <span class="modal-close" onclick="closeModal('purchase-success-modal')">&times;</span>
-            <h3 style="color:#16a34a; margin-bottom:10px;"><i class="fas fa-check-circle"></i> Purchase Successful!</h3>
-            <textarea id="purchased-data-text" rows="5" readonly style="background:#f8fafc; font-family:monospace;"></textarea>
-            <div style="display:flex; gap:10px; margin-top:10px;">
-                <button class="btn btn-primary" style="flex:1;" onclick="copyPurchasedData()"><i class="fas fa-copy"></i> Copy</button>
-                <button class="btn btn-success" style="flex:1;" onclick="downloadPurchasedData()"><i class="fas fa-download"></i> Download</button>
-            </div>
         </div>
     </div>
 
     <!-- Admin Panel Modal -->
     <div id="admin-modal" class="modal">
-        <div class="modal-content dash-modal-layout">
-            <div class="dash-sidebar">
-                <div>
-                    <div class="brand">👑 Admin Panel</div>
-                    <ul class="dash-menu">
-                        <li id="a-tab-dash" class="active" onclick="switchAdminTab('dash')"><i class="fas fa-th-large"></i> Control Center</li>
-                        <li id="a-tab-chat" onclick="switchAdminTab('chat')"><i class="fas fa-comments"></i> Live Support Chat</li>
-                    </ul>
-                </div>
-                <div style="padding: 0 20px;"><button class="btn btn-danger" style="width: 100%;" onclick="logout()">Logout</button></div>
+        <div class="modal-content" style="width: 80vw; max-width: 1000px;">
+            <span class="modal-close" onclick="closeModal('admin-modal')">&times;</span>
+            <h2>👑 Admin Dashboard</h2>
+            <br>
+            <div class="admin-card">
+                <h4><i class="fas fa-clock"></i> Pending Deposit Requests (Approve Here)</h4>
+                <div id="admin-pending-deposits"></div>
             </div>
 
-            <div class="dash-main">
-                <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-                    <h2>Admin Dashboard</h2>
-                    <button class="btn btn-danger" onclick="closeModal('admin-modal')">Close</button>
-                </div>
-
-                <div id="a-sec-dash">
-                    <div class="admin-card">
-                        <h4><i class="fas fa-clock"></i> Pending Deposit Requests</h4>
-                        <div id="admin-pending-deposits"></div>
-                    </div>
-
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-                        <div class="admin-card">
-                            <h4><i class="fas fa-folder"></i> Add Category</h4>
-                            <input type="text" id="new-cat-name" placeholder="Category Name">
-                            <input type="text" id="new-cat-icon" placeholder="Category Logo URL">
-                            <button class="btn btn-primary" style="width:100%;" onclick="addCategory()">Add Category</button>
-                        </div>
-
-                        <div class="admin-card">
-                            <h4><i class="fas fa-cloud-upload-alt"></i> Add Product (Gallery Upload Supported)</h4>
-                            <input type="hidden" id="edit-prod-id">
-                            <select id="prod-cat-select"></select>
-                            <input type="text" id="prod-title" placeholder="Listing Title">
-                            <input type="text" id="prod-desc" placeholder="Product Description">
-                            <input type="number" id="prod-price" placeholder="Price in USD">
-                            
-                            <!-- File input for image upload from gallery -->
-                            <label style="font-size:12px; font-weight:bold;">Upload Image from Mobile/PC Gallery:</label>
-                            <input type="file" id="prod-file-input" accept="image/*" onchange="convertImageToBase64()">
-                            <input type="hidden" id="prod-img">
-
-                            <textarea id="prod-accounts" placeholder="Paste account stock data line by line" rows="3"></textarea>
-                            <button class="btn btn-success" style="width:100%;" onclick="saveProduct()">Save Product Listing</button>
-                        </div>
-                    </div>
-
-                    <div class="admin-card">
-                        <h4><i class="fas fa-list-ul"></i> Product Listings</h4>
-                        <div id="admin-listings-table" style="max-height:200px; overflow-y:auto;"></div>
-                    </div>
-                </div>
-
-                <!-- Admin Live Support Chat Hub -->
-                <div id="a-sec-chat" style="display:none;">
-                    <div class="admin-card">
-                        <h4><i class="fas fa-comments"></i> Active Customer Live Support Chats</h4>
-                        <div style="display:flex; gap:20px; height:400px; margin-top:15px;">
-                            <div id="admin-chat-users-list" style="width:220px; border-right:1px solid #cbd5e1; overflow-y:auto;"></div>
-                            <div style="flex:1; display:flex; flex-direction:column;">
-                                <div id="admin-chat-messages" style="flex:1; background:#f1f5f9; padding:15px; overflow-y:auto; border-radius:6px; border:1px solid #e2e8f0;">Select a user from left list</div>
-                                <div style="display:flex; gap:10px; margin-top:10px;">
-                                    <input type="text" id="admin-chat-input" placeholder="Type reply message..." style="margin:0;">
-                                    <button class="btn btn-primary" onclick="sendAdminChatReply()">Send Reply</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="admin-card">
+                <h4><i class="fas fa-comments"></i> Customer Support Live Messages</h4>
+                <div id="admin-chat-hub" style="max-height:250px; overflow-y:auto; background:#f8fafc; padding:10px; border-radius:6px;"></div>
             </div>
         </div>
     </div>
 
-    <!-- Floating Live Chat for Customer -->
+    <!-- Floating Auto-Live Chat for Customer -->
     <div class="chat-widget">
         <button class="chat-btn-float" onclick="toggleChat()"><i class="fas fa-comments"></i> Live Chat</button>
         <div class="chat-box" id="chat-box">
-            <div class="chat-header"><span>💬 Live Support</span><span style="cursor:pointer;" onclick="toggleChat()">&times;</span></div>
+            <div class="chat-header"><span>💬 Live Support (Instant)</span><span style="cursor:pointer;" onclick="toggleChat()">&times;</span></div>
             <div class="chat-body" id="chat-body"></div>
             <div class="chat-footer">
                 <input type="text" id="chat-input" placeholder="Type message..." style="margin:0;">
@@ -317,19 +200,33 @@
         let currentUser = localStorage.getItem('userEmail') || '';
         let currentUserName = localStorage.getItem('userName') || '';
         let isAdminLoggedIn = localStorage.getItem('isAdmin') === 'true';
-        let selectedCategory = 'All';
-        let currentView = 'row'; // 'row' or 'grid'
         let allProducts = [];
         let allCategories = [];
-        let currentPurchasedData = "";
-        let selectedChatUser = "";
+        let chatInterval = null;
 
-        function showNotification(message, type = 'success') {
+        function showNotification(msg, type='success') {
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
-            toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            toast.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i> ${msg}`;
             document.getElementById('toast-container').appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        // Toggle Password Visibility (Eye Button)
+        function togglePasswordVisibility(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
         }
 
         function updateUI() {
@@ -337,191 +234,35 @@
                 document.getElementById('user-display').innerText = currentUserName || currentUser;
                 document.getElementById('login-btn').style.display = 'none';
                 document.getElementById('signup-btn').style.display = 'none';
-                document.getElementById('dashboard-btn').style.display = 'inline-block';
                 document.getElementById('logout-btn').style.display = 'inline-block';
                 fetchBalance();
             } else {
                 document.getElementById('user-display').innerText = 'Not Logged In';
                 document.getElementById('login-btn').style.display = 'inline-block';
                 document.getElementById('signup-btn').style.display = 'inline-block';
-                document.getElementById('dashboard-btn').style.display = 'none';
                 document.getElementById('logout-btn').style.display = 'none';
             }
             document.getElementById('admin-dash-btn').style.display = isAdminLoggedIn ? 'inline-block' : 'none';
-            setProductView(currentView);
         }
 
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        async function signup() {
+            const firstName = document.getElementById('signup-fn').value;
+            const lastName = document.getElementById('signup-ln').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-pass').value;
+            const confirmPassword = document.getElementById('signup-cpass').value;
 
-        function setProductView(view) {
-            currentView = view;
-            document.getElementById('btn-view-row').classList.toggle('active', view === 'row');
-            document.getElementById('btn-view-grid').classList.toggle('active', view === 'grid');
-            renderProducts();
-        }
-
-        async function fetchCategories() {
-            const res = await fetch('/api/categories');
-            allCategories = await res.json();
-
-            const catBar = document.getElementById('category-bar');
-            catBar.innerHTML = `<div class="cat-btn ${selectedCategory === 'All' ? 'active' : ''}" onclick="filterCategory('All')">All Categories</div>`;
-
-            const select = document.getElementById('prod-cat-select');
-            if (select) select.innerHTML = '';
-
-            allCategories.forEach(cat => {
-                const iconHTML = cat.icon ? `<img src="${cat.icon}" style="width:16px; height:16px;">` : '';
-                catBar.innerHTML += `<div class="cat-btn ${selectedCategory === cat.name ? 'active' : ''}" onclick="filterCategory('${cat.name}')">${iconHTML} ${cat.name}</div>`;
-                if (select) select.innerHTML += `<option value="${cat.name}">${cat.name}</option>`;
-            });
-        }
-
-        function filterCategory(catName) {
-            selectedCategory = catName;
-            fetchCategories();
-            renderProducts();
-        }
-
-        async function fetchProducts() {
-            const res = await fetch('/api/products');
-            allProducts = await res.json();
-            renderProducts();
-        }
-
-        function filterProductsBySearch() {
-            renderProducts();
-        }
-
-        // Gallery File Selection -> Convert Image to Base64
-        function convertImageToBase64() {
-            const file = document.getElementById('prod-file-input').files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onloadend = function() {
-                    document.getElementById('prod-img').value = reader.result;
-                    showNotification('Image selected from gallery!', 'success');
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function renderProducts() {
-            const wrapper = document.getElementById('products-wrapper');
-            wrapper.innerHTML = '';
-
-            const searchQuery = document.getElementById('search-input').value.toLowerCase();
-            const categoriesToDisplay = selectedCategory === 'All' ? allCategories.map(c => c.name) : [selectedCategory];
-
-            categoriesToDisplay.forEach(catName => {
-                let categoryProds = allProducts.filter(p => p.category === catName);
-                if (searchQuery) {
-                    categoryProds = categoryProds.filter(p => p.title.toLowerCase().includes(searchQuery));
-                }
-
-                if (categoryProds.length === 0) return;
-                const catObj = allCategories.find(c => c.name === catName) || {};
-
-                if (currentView === 'row') { // Row List
-                    let itemsHTML = '';
-                    categoryProds.forEach(p => {
-                        const icon = p.imageUrl || catObj.icon || 'https://via.placeholder.com/32';
-                        itemsHTML += `
-                            <div class="row-item">
-                                <div class="row-left" onclick="showDescription(${p.id})">
-                                    <img src="${icon}" class="row-icon">
-                                    <span class="row-title">${p.title}</span>
-                                </div>
-                                <div class="row-mid">
-                                    <div><span style="font-weight:bold;">${p.stockCount} pcs</span><br><span style="font-size:11px; color:gray;">Sold ${p.soldCount}</span></div>
-                                    <div><span style="font-size:12px; color:gray;">Price</span><div style="font-weight:bold;">$${p.price.toFixed(2)}</div></div>
-                                    <button class="btn btn-buy" onclick="openBuyModal(${p.id})"><i class="fas fa-shopping-cart"></i> Buy</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    wrapper.innerHTML += `<div class="category-block"><div class="category-header">${catName} Accounts</div>${itemsHTML}</div>`;
-                } else { // Grid / Box Mode
-                    let gridHTML = '';
-                    categoryProds.forEach(p => {
-                        const icon = p.imageUrl || catObj.icon || 'https://via.placeholder.com/40';
-                        gridHTML += `
-                            <div class="grid-card">
-                                <div>
-                                    <div class="grid-card-top" onclick="showDescription(${p.id})">
-                                        <img src="${icon}" class="grid-card-img">
-                                        <div style="font-weight:bold; font-size:14px; color:#1e293b;">${p.title}</div>
-                                    </div>
-                                    <div style="font-size:12px; color:gray; margin-bottom:10px;">Stock: <b>${p.stockCount} pcs</b> | Sold: ${p.soldCount}</div>
-                                </div>
-                                <div style="display:flex; justify-content:space-between; align-items:center;">
-                                    <div style="font-size:15px; font-weight:bold; color:#16a34a;">$${p.price.toFixed(2)}</div>
-                                    <button class="btn btn-buy" onclick="openBuyModal(${p.id})">Buy</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    wrapper.innerHTML += `<div class="category-block"><div class="category-header">${catName} Accounts</div><div class="grid-container">${gridHTML}</div></div>`;
-                }
-            });
-        }
-
-        function showDescription(productId) {
-            const p = allProducts.find(item => item.id === productId);
-            if (!p) return;
-
-            document.getElementById('desc-img').src = p.imageUrl || 'https://via.placeholder.com/50';
-            document.getElementById('desc-title').innerText = p.title;
-            document.getElementById('desc-price-tag').innerText = `Price: $${p.price.toFixed(2)} USD | Available Stock: ${p.stockCount} pcs`;
-            document.getElementById('desc-body').innerText = p.description || "No description provided.";
-            
-            const buyBtn = document.getElementById('desc-buy-btn');
-            buyBtn.onclick = function() {
-                closeModal('desc-modal');
-                openBuyModal(p.id);
-            };
-
-            openModal('desc-modal');
-        }
-
-        function openBuyModal(productId) {
-            if (!currentUser) return showNotification('Please login first!', 'error');
-            const p = allProducts.find(item => item.id === productId);
-            if (!p) return;
-
-            document.getElementById('buy-prod-id').value = p.id;
-            document.getElementById('buy-title').innerText = p.title;
-            document.getElementById('buy-unit-price').innerText = p.price.toFixed(2);
-            document.getElementById('buy-qty').value = 1;
-            calculateBuyTotal();
-            openModal('buy-modal');
-        }
-
-        function calculateBuyTotal() {
-            const unitPrice = parseFloat(document.getElementById('buy-unit-price').innerText);
-            const qty = parseInt(document.getElementById('buy-qty').value) || 1;
-            document.getElementById('buy-total-calc').innerText = '$' + (unitPrice * qty).toFixed(2) + ' USD';
-        }
-
-        async function confirmPurchase() {
-            const productId = parseInt(document.getElementById('buy-prod-id').value);
-            const quantity = parseInt(document.getElementById('buy-qty').value);
-
-            const res = await fetch('/api/buy', {
+            const res = await fetch('/api/auth/signup', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ email: currentUser, productId, quantity })
+                body: JSON.stringify({ firstName, lastName, email, password, confirmPassword })
             });
             const data = await res.json();
 
             if (data.success) {
-                currentPurchasedData = data.order.accountData;
-                document.getElementById('purchased-data-text').value = currentPurchasedData;
-                closeModal('buy-modal');
-                fetchBalance();
-                fetchProducts();
-                openModal('purchase-success-modal');
+                showNotification(data.message, 'success');
+                closeModal('signup-modal');
+                openModal('login-modal');
             } else {
                 showNotification(data.message, 'error');
             }
@@ -544,133 +285,25 @@
                 if (data.isAdmin) {
                     isAdminLoggedIn = true;
                     localStorage.setItem('isAdmin', 'true');
-                    updateUI();
                     openAdminDashboard();
                 } else {
                     currentUser = data.user.email;
                     currentUserName = data.user.firstName;
                     localStorage.setItem('userEmail', currentUser);
                     localStorage.setItem('userName', currentUserName);
-                    updateUI();
                 }
-                fetchProducts();
+                updateUI();
             } else {
                 showNotification(data.message, 'error');
             }
         }
 
         function logout() {
-            currentUser = '';
-            currentUserName = '';
-            isAdminLoggedIn = false;
             localStorage.clear();
-            closeModal('admin-modal');
+            currentUser = '';
+            isAdminLoggedIn = false;
             updateUI();
-            fetchProducts();
             showNotification('Logged out!', 'success');
-        }
-
-        async function addCategory() {
-            const name = document.getElementById('new-cat-name').value;
-            const icon = document.getElementById('new-cat-icon').value;
-            if (!name) return;
-
-            await fetch('/api/admin/add-category', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ name, icon })
-            });
-            showNotification('Category added!', 'success');
-            fetchCategories();
-        }
-
-        async function saveProduct() {
-            const id = document.getElementById('edit-prod-id').value;
-            const category = document.getElementById('prod-cat-select').value;
-            const title = document.getElementById('prod-title').value;
-            const description = document.getElementById('prod-desc').value;
-            const price = document.getElementById('prod-price').value;
-            const imageUrl = document.getElementById('prod-img').value;
-            const accounts = document.getElementById('prod-accounts').value;
-
-            if (!title || !price) return showNotification('Fill title and price!', 'error');
-
-            await fetch('/api/admin/save-product', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ id, title, description, category, imageUrl, price, accounts })
-            });
-
-            showNotification('Product saved!', 'success');
-            openAdminDashboard();
-            fetchProducts();
-        }
-
-        async function openAdminDashboard() {
-            fetchCategories();
-            const res = await fetch('/api/admin/analytics');
-            const data = await res.json();
-
-            // Pending Deposits Table
-            let depHTML = `<table class="data-table"><tr><th>User</th><th>TrxID</th><th>Method</th><th>Amount</th><th>Action</th></tr>`;
-            data.pendingDeposits.forEach(d => {
-                depHTML += `<tr><td>${d.email}</td><td><code>${d.txId}</code></td><td>${d.method}</td><td>$${d.amount}</td><td><button class="btn btn-success" style="padding:2px 8px; font-size:11px;" onclick="approveDeposit(${d.id})">Approve</button></td></tr>`;
-            });
-            document.getElementById('admin-pending-deposits').innerHTML = depHTML + `</table>`;
-
-            // Render Active Live Support Users for Admin
-            let usersHTML = '';
-            data.activeChatUsers.forEach(u => {
-                usersHTML += `<div style="padding:10px; cursor:pointer; border-bottom:1px solid #e2e8f0; font-size:12px;" onclick="loadAdminChatForUser('${u}')">💬 ${u}</div>`;
-            });
-            document.getElementById('admin-chat-users-list').innerHTML = usersHTML || '<p style="padding:10px; font-size:12px; color:gray;">No chat active</p>';
-
-            // Listings Table
-            let listHTML = `<table class="data-table"><tr><th>Title</th><th>Stock</th><th>Action</th></tr>`;
-            data.productsList.forEach(p => {
-                listHTML += `<tr><td>${p.title}</td><td>${p.stock.length}</td><td><button class="btn btn-danger" style="padding:2px 8px; font-size:11px;" onclick="deleteProduct(${p.id})">Delete</button></td></tr>`;
-            });
-            document.getElementById('admin-listings-table').innerHTML = listHTML + `</table>`;
-
-            openModal('admin-modal');
-        }
-
-        function switchAdminTab(tab) {
-            document.getElementById('a-sec-dash').style.display = tab === 'dash' ? 'block' : 'none';
-            document.getElementById('a-sec-chat').style.display = tab === 'chat' ? 'block' : 'none';
-            document.getElementById('a-tab-dash').classList.toggle('active', tab === 'dash');
-            document.getElementById('a-tab-chat').classList.toggle('active', tab === 'chat');
-        }
-
-        async function loadAdminChatForUser(email) {
-            selectedChatUser = email;
-            const res = await fetch('/api/chat/messages/' + email);
-            const msgs = await res.json();
-
-            let chatHTML = '';
-            msgs.forEach(m => {
-                const isAdmin = m.sender === 'Admin';
-                chatHTML += `<div style="margin-bottom:8px; text-align:${isAdmin ? 'right' : 'left'};">
-                    <span style="background:${isAdmin ? '#2563eb' : '#cbd5e1'}; color:${isAdmin ? '#fff' : '#000'}; padding:6px 12px; border-radius:8px; font-size:13px; display:inline-block;">
-                        <strong>${m.sender}:</strong> ${m.message}
-                    </span>
-                </div>`;
-            });
-            document.getElementById('admin-chat-messages').innerHTML = chatHTML || 'No messages yet.';
-        }
-
-        async function sendAdminChatReply() {
-            const text = document.getElementById('admin-chat-input').value;
-            if (!text || !selectedChatUser) return;
-
-            await fetch('/api/chat/send', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ sender: 'Admin', receiver: selectedChatUser, message: text, userEmail: selectedChatUser })
-            });
-
-            document.getElementById('admin-chat-input').value = '';
-            loadAdminChatForUser(selectedChatUser);
         }
 
         async function processDeposit() {
@@ -678,29 +311,69 @@
             const amount = document.getElementById('deposit-amount').value;
             const trxId = document.getElementById('deposit-trxid').value;
 
-            if (!currentUser || !amount || !trxId) return showNotification('Fill all fields!', 'error');
+            if (!currentUser) return showNotification('Please login first!', 'error');
+            if (!amount || !trxId) return showNotification('Provide Amount & TrxID!', 'error');
 
-            await fetch('/api/deposit', {
+            const res = await fetch('/api/deposit', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ email: currentUser, method, amount: parseFloat(amount), trxId })
             });
+            const data = await res.json();
 
-            showNotification('Deposit requested!', 'success');
-            closeModal('deposit-modal');
+            if (data.success) {
+                showNotification('Deposit requested successfully!', 'success');
+                closeModal('deposit-modal');
+            }
+        }
+
+        async function openAdminDashboard() {
+            const res = await fetch('/api/admin/analytics');
+            const data = await res.json();
+
+            let depHTML = `<table class="data-table"><tr><th>User</th><th>TrxID</th><th>Method</th><th>Amount</th><th>Action</th></tr>`;
+            data.pendingDeposits.forEach(d => {
+                depHTML += `<tr><td>${d.email}</td><td><code>${d.txId}</code></td><td>${d.method}</td><td>$${d.amount}</td><td><button class="btn btn-success" style="padding:2px 8px; font-size:11px;" onclick="approveDeposit(${d.id})">Approve</button></td></tr>`;
+            });
+            document.getElementById('admin-pending-deposits').innerHTML = depHTML + `</table>`;
+            openModal('admin-modal');
+        }
+
+        async function approveDeposit(depositId) {
+            const res = await fetch('/api/admin/approve-deposit', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ depositId })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showNotification('Deposit Approved!', 'success');
+                openAdminDashboard();
+            }
         }
 
         async function fetchBalance() {
             if (!currentUser) return;
             const res = await fetch('/api/user/dashboard/' + currentUser);
             const data = await res.json();
-            document.getElementById('user-balance').innerText = '$' + data.balance.toFixed(2);
+            if(data.balance !== undefined) {
+                document.getElementById('user-balance').innerText = '$' + data.balance.toFixed(2);
+            }
         }
 
+        // Live Auto Chat Engine (Without Refresh)
         function toggleChat() {
             const box = document.getElementById('chat-box');
-            box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
-            if (box.style.display === 'flex') fetchChatMessages();
+            const isOpen = box.style.display === 'flex';
+            box.style.display = isOpen ? 'none' : 'flex';
+
+            if (!isOpen) {
+                fetchChatMessages();
+                // 3 সেকেন্ড পর পর নতুন মেসেজ অটো চেক করবে
+                chatInterval = setInterval(fetchChatMessages, 3000); 
+            } else {
+                clearInterval(chatInterval);
+            }
         }
 
         async function fetchChatMessages() {
@@ -714,10 +387,12 @@
                 const isMe = m.sender !== 'Admin';
                 body.innerHTML += `<div class="chat-msg ${isMe ? 'me' : 'other'}"><strong>${m.sender}:</strong> ${m.message}</div>`;
             });
+            body.scrollTop = body.scrollHeight; // Auto scroll to bottom
         }
 
         async function sendChatMessage() {
-            const text = document.getElementById('chat-input').value;
+            const input = document.getElementById('chat-input');
+            const text = input.value;
             if (!text || !currentUser) return;
 
             await fetch('/api/chat/send', {
@@ -726,26 +401,11 @@
                 body: JSON.stringify({ sender: currentUserName || 'User', receiver: 'Admin', message: text, userEmail: currentUser })
             });
 
-            document.getElementById('chat-input').value = '';
+            input.value = '';
             fetchChatMessages();
         }
 
-        function copyPurchasedData() {
-            navigator.clipboard.writeText(currentPurchasedData);
-            showNotification('Copied!', 'success');
-        }
-
-        function downloadPurchasedData() {
-            const blob = new Blob([currentPurchasedData], { type: 'text/plain' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'accounts_' + Date.now() + '.txt';
-            a.click();
-        }
-
         updateUI();
-        fetchCategories();
-        fetchProducts();
     </script>
 </body>
 </html>
