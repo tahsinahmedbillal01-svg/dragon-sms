@@ -7,7 +7,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(bodyParser.json());
+// JSON & URL-encoded payload limit size increased for Image base64 string upload
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 let categories = ['Outlook', 'Gmail', 'Facebook'];
@@ -76,22 +78,10 @@ app.get('/api/admin/analytics', (req, res) => {
         .filter(o => new Date(o.rawDate).toLocaleDateString() === today)
         .reduce((sum, o) => sum + o.price, 0);
 
-    const categorySales = {};
-    categories.forEach(cat => { categorySales[cat] = { amount: 0, count: 0 }; });
-    
-    orders.forEach(o => {
-        if (!categorySales[o.category]) {
-            categorySales[o.category] = { amount: 0, count: 0 };
-        }
-        categorySales[o.category].amount += o.price;
-        categorySales[o.category].count += 1;
-    });
-
     res.json({
         totalUsers: users.length,
         todaySalesUSD: todaySales.toFixed(2),
         totalSoldProducts: orders.length,
-        categorySales,
         usersList: users,
         ordersList: orders,
         productsList: products
@@ -109,22 +99,26 @@ app.post('/api/admin/add-category', (req, res) => {
     res.json({ success: true, categories });
 });
 
-// Add / Edit Product
+// Add / Edit Product with Image Base64 & Description & Restock
 app.post('/api/admin/save-product', (req, res) => {
-    const { id, title, category, price, imageUrl, accounts } = req.body;
+    const { id, title, description, category, price, imageUrl, accounts } = req.body;
     const accountList = accounts ? accounts.split('\n').map(a => a.trim()).filter(a => a !== '') : [];
 
     if (id) {
-        // Edit Existing Product
+        // Edit Existing Product (Add extra stock if provided)
         const index = products.findIndex(p => p.id === parseInt(id));
         if (index !== -1) {
+            let existingStock = products[index].stock || [];
+            let updatedStock = accountList.length > 0 ? existingStock.concat(accountList) : existingStock;
+
             products[index] = {
                 id: parseInt(id),
                 title,
+                description: description || '',
                 category,
                 price: parseFloat(price),
-                imageUrl: imageUrl || 'https://via.placeholder.com/150',
-                stock: accountList
+                imageUrl: imageUrl || products[index].imageUrl || 'https://via.placeholder.com/150',
+                stock: updatedStock
             };
         }
     } else {
@@ -132,6 +126,7 @@ app.post('/api/admin/save-product', (req, res) => {
         const newProduct = {
             id: Date.now(),
             title,
+            description: description || '',
             category,
             price: parseFloat(price),
             imageUrl: imageUrl || 'https://via.placeholder.com/150',
@@ -140,7 +135,7 @@ app.post('/api/admin/save-product', (req, res) => {
         products.push(newProduct);
     }
 
-    res.json({ success: true, message: 'Listing saved successfully!' });
+    res.json({ success: true, message: 'Listing saved & restocked successfully!' });
 });
 
 app.delete('/api/admin/delete-product/:id', (req, res) => {
@@ -153,6 +148,7 @@ app.get('/api/products', (req, res) => {
     const safeProducts = products.map(p => ({
         id: p.id,
         title: p.title,
+        description: p.description,
         category: p.category,
         price: p.price,
         imageUrl: p.imageUrl,
@@ -211,7 +207,7 @@ app.post('/api/buy', (req, res) => {
     const product = products.find(p => p.id === productId);
     const user = users.find(u => u.email === email);
 
-    if (!user) return res.status(400).json({ success: false, message: 'User not logged in!' });
+    if (!user) return res.status(400).json({ success: false, message: 'Please login first!' });
     if (!product || product.stock.length === 0) return res.status(400).json({ success: false, message: 'Out of stock!' });
     if (user.balanceUSD < product.price) return res.status(400).json({ success: false, message: 'Insufficient balance!' });
 
