@@ -8,13 +8,12 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(bodyParser.json({ limit: '10mb' }));
-app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const DATA_FILE = path.join(__dirname, 'data.json');
 
-// Initial Data Structure
 let db = {
     categories: [
         { name: 'Facebook', icon: 'https://cdn-icons-png.flaticon.com/512/5968/5968764.png' },
@@ -28,17 +27,15 @@ let db = {
     chatMessages: []
 };
 
-// Load saved data from JSON file
 if (fs.existsSync(DATA_FILE)) {
     try {
         const raw = fs.readFileSync(DATA_FILE);
         db = JSON.parse(raw);
     } catch (e) {
-        console.log('Error reading data file, using defaults.');
+        console.log('Error loading data, using fallback defaults.');
     }
 }
 
-// Function to save data to JSON file
 function saveData() {
     fs.writeFileSync(DATA_FILE, JSON.stringify(db, null, 2));
 }
@@ -46,10 +43,9 @@ function saveData() {
 const ADMIN_EMAIL = "sean.storr75@gmail.com";
 const ADMIN_PASS = "Alex@123tt";
 
-// Sign Up
+// Authentication APIs
 app.post('/api/auth/signup', (req, res) => {
     const { firstName, lastName, email, password, confirmPassword } = req.body;
-
     if (!firstName || !lastName || !email || !password) {
         return res.status(400).json({ success: false, message: 'All fields are required!' });
     }
@@ -57,41 +53,33 @@ app.post('/api/auth/signup', (req, res) => {
         return res.status(400).json({ success: false, message: 'Passwords do not match!' });
     }
     if (db.users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
-        return res.status(400).json({ success: false, message: 'Email already registered! One email per account allowed.' });
+        return res.status(400).json({ success: false, message: 'Email already registered!' });
     }
 
-    const newUser = { firstName, lastName, email: email.toLowerCase(), password, balanceUSD: 0, date: new Date().toLocaleDateString('en-US') };
+    const newUser = { firstName, lastName, email: email.toLowerCase(), password, balanceUSD: 0, date: new Date().toLocaleDateString() };
     db.users.push(newUser);
     saveData();
-    res.json({ success: true, message: 'Account registered successfully!' });
+    res.json({ success: true, message: 'Account created successfully!' });
 });
 
-// Forgot Password Reset
 app.post('/api/auth/forgot-password', (req, res) => {
     const { email, newPassword } = req.body;
     const user = db.users.find(u => u.email.toLowerCase() === email.toLowerCase());
-
-    if (!user) {
-        return res.status(400).json({ success: false, message: 'Email not found!' });
-    }
+    if (!user) return res.status(400).json({ success: false, message: 'Email not found!' });
 
     user.password = newPassword;
     saveData();
-    res.json({ success: true, message: 'Password updated successfully! Please login with your new password.' });
+    res.json({ success: true, message: 'Password updated successfully!' });
 });
 
-// Login
 app.post('/api/auth/login', (req, res) => {
     const { email, password } = req.body;
-
     if (email === ADMIN_EMAIL && password === ADMIN_PASS) {
-        return res.json({ success: true, isAdmin: true, message: 'Welcome to Admin Control Panel!' });
+        return res.json({ success: true, isAdmin: true, message: 'Logged in as Admin!' });
     }
 
     const user = db.users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
-    if (!user) {
-        return res.status(400).json({ success: false, message: 'Invalid email or password!' });
-    }
+    if (!user) return res.status(400).json({ success: false, message: 'Invalid Credentials!' });
 
     res.json({
         success: true,
@@ -101,12 +89,14 @@ app.post('/api/auth/login', (req, res) => {
     });
 });
 
-// Admin Analytics
+// Admin Analytics & Chat Data
 app.get('/api/admin/analytics', (req, res) => {
     const today = new Date().toLocaleDateString();
     const todaySales = db.orders
         .filter(o => new Date(o.rawDate).toLocaleDateString() === today)
         .reduce((sum, o) => sum + o.price, 0);
+
+    const activeChatUsers = [...new Set(db.chatMessages.map(m => m.userEmail))];
 
     res.json({
         totalUsers: db.users.length,
@@ -115,11 +105,12 @@ app.get('/api/admin/analytics', (req, res) => {
         usersList: db.users,
         ordersList: db.orders,
         productsList: db.products,
-        pendingDeposits: db.deposits.filter(d => d.status === 'Pending')
+        pendingDeposits: db.deposits.filter(d => d.status === 'Pending'),
+        activeChatUsers
     });
 });
 
-// Categories APIs
+// Category Management
 app.get('/api/categories', (req, res) => res.json(db.categories));
 
 app.post('/api/admin/add-category', (req, res) => {
@@ -131,7 +122,7 @@ app.post('/api/admin/add-category', (req, res) => {
     res.json({ success: true, categories: db.categories });
 });
 
-// Save / Restock Product
+// Save Listing with File/Image Data
 app.post('/api/admin/save-product', (req, res) => {
     const { id, title, description, category, price, imageUrl, accounts } = req.body;
     const accountList = accounts ? accounts.split('\n').map(a => a.trim()).filter(a => a !== '') : [];
@@ -168,14 +159,13 @@ app.post('/api/admin/save-product', (req, res) => {
     }
 
     saveData();
-    res.json({ success: true, message: 'Listing saved successfully!' });
+    res.json({ success: true, message: 'Product listing saved!' });
 });
 
 app.delete('/api/admin/delete-product/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    db.products = db.products.filter(p => p.id !== id);
+    db.products = db.products.filter(p => p.id !== parseInt(req.params.id));
     saveData();
-    res.json({ success: true, message: 'Listing deleted successfully!' });
+    res.json({ success: true, message: 'Deleted!' });
 });
 
 app.get('/api/products', (req, res) => {
@@ -192,7 +182,7 @@ app.get('/api/products', (req, res) => {
     res.json(safeProducts);
 });
 
-// User Dashboard Data
+// User Info
 app.get('/api/user/dashboard/:email', (req, res) => {
     const user = db.users.find(u => u.email.toLowerCase() === req.params.email.toLowerCase());
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
@@ -200,32 +190,28 @@ app.get('/api/user/dashboard/:email', (req, res) => {
     const userOrders = db.orders.filter(o => o.email.toLowerCase() === req.params.email.toLowerCase());
     const userDeposits = db.deposits.filter(d => d.email.toLowerCase() === req.params.email.toLowerCase());
 
-    const totalSpent = userOrders.reduce((sum, o) => sum + o.price, 0);
-
     res.json({
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
         memberSince: user.date,
         balance: user.balanceUSD,
-        totalSpent,
+        totalSpent: userOrders.reduce((sum, o) => sum + o.price, 0),
         totalOrdersCount: userOrders.length,
         orders: userOrders,
         deposits: userDeposits
     });
 });
 
-// Deposit Request with TrxID
+// Deposits
 app.post('/api/deposit', (req, res) => {
     const { email, method, amount, trxId } = req.body;
     const user = db.users.find(u => u.email.toLowerCase() === email.toLowerCase());
-
-    if (!user) return res.status(400).json({ success: false, message: 'User not found!' });
-    if (!trxId) return res.status(400).json({ success: false, message: 'Transaction ID is required!' });
+    if (!user || !trxId) return res.status(400).json({ success: false, message: 'Invalid submission!' });
 
     let addedUSD = method === 'bkash' ? parseFloat((amount / 120).toFixed(2)) : parseFloat(amount);
 
-    const dep = {
+    db.deposits.push({
         id: Date.now(),
         txId: trxId,
         email: user.email,
@@ -233,14 +219,11 @@ app.post('/api/deposit', (req, res) => {
         method: method.toUpperCase(),
         date: new Date().toLocaleString(),
         status: 'Pending'
-    };
-    db.deposits.push(dep);
+    });
     saveData();
-
-    res.json({ success: true, message: 'Deposit request submitted! Admin will verify TrxID and approve.' });
+    res.json({ success: true, message: 'Deposit requested!' });
 });
 
-// Admin Deposit Approval
 app.post('/api/admin/approve-deposit', (req, res) => {
     const { depositId } = req.body;
     const dep = db.deposits.find(d => d.id === depositId);
@@ -248,16 +231,14 @@ app.post('/api/admin/approve-deposit', (req, res) => {
     if (dep && dep.status === 'Pending') {
         dep.status = 'Approved';
         const user = db.users.find(u => u.email.toLowerCase() === dep.email.toLowerCase());
-        if (user) {
-            user.balanceUSD += dep.amount;
-        }
+        if (user) user.balanceUSD += dep.amount;
         saveData();
-        return res.json({ success: true, message: 'Deposit approved & balance added!' });
+        return res.json({ success: true, message: 'Deposit approved!' });
     }
-    res.status(400).json({ success: false, message: 'Invalid or already processed deposit.' });
+    res.status(400).json({ success: false, message: 'Error approving deposit.' });
 });
 
-// Bulk Buy Products with Quantity
+// Buy logic
 app.post('/api/buy', (req, res) => {
     const { email, productId, quantity } = req.body;
     const qty = parseInt(quantity) || 1;
@@ -265,16 +246,14 @@ app.post('/api/buy', (req, res) => {
     const user = db.users.find(u => u.email.toLowerCase() === email.toLowerCase());
 
     if (!user) return res.status(400).json({ success: false, message: 'Please login first!' });
-    if (!product || product.stock.length < qty) return res.status(400).json({ success: false, message: 'Not enough stock available!' });
+    if (!product || product.stock.length < qty) return res.status(400).json({ success: false, message: 'Not enough stock!' });
 
     const totalPrice = product.price * qty;
-    if (user.balanceUSD < totalPrice) return res.status(400).json({ success: false, message: `Insufficient balance! Needed: $${totalPrice.toFixed(2)}` });
+    if (user.balanceUSD < totalPrice) return res.status(400).json({ success: false, message: 'Insufficient balance!' });
 
     user.balanceUSD -= totalPrice;
-    const purchasedAccounts = product.stock.splice(0, qty);
+    const purchased = product.stock.splice(0, qty);
     product.soldCount = (product.soldCount || 0) + qty;
-
-    const deliveredText = purchasedAccounts.join('\n');
 
     const order = {
         orderId: '#ORD-' + Math.floor(10000 + Math.random() * 90000),
@@ -282,10 +261,10 @@ app.post('/api/buy', (req, res) => {
         productTitle: product.title,
         quantity: qty,
         category: product.category,
-        accountData: deliveredText,
+        accountData: purchased.join('\n'),
         price: totalPrice,
         rawDate: new Date(),
-        date: new Date().toLocaleDateString('en-US'),
+        date: new Date().toLocaleDateString(),
         status: 'Completed'
     };
     db.orders.push(order);
@@ -294,15 +273,17 @@ app.post('/api/buy', (req, res) => {
     res.json({ success: true, message: 'Purchase successful!', order, balance: user.balanceUSD });
 });
 
-// Live Chat Support APIs
+// Live Chat APIs
 app.get('/api/chat/messages/:email', (req, res) => {
     const userEmail = req.params.email.toLowerCase();
-    const msgs = db.chatMessages.filter(m => m.userEmail.toLowerCase() === userEmail || m.receiver.toLowerCase() === userEmail);
+    const msgs = db.chatMessages.filter(m => m.userEmail.toLowerCase() === userEmail);
     res.json(msgs);
 });
 
 app.post('/api/chat/send', (req, res) => {
     const { sender, receiver, message, userEmail } = req.body;
+    if (!userEmail || !message) return res.status(400).json({ success: false });
+
     const chat = {
         id: Date.now(),
         sender,
