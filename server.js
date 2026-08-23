@@ -14,6 +14,7 @@ let categories = ['Outlook', 'Gmail', 'Facebook'];
 let products = [];
 let users = [];
 let orders = [];
+let deposits = [];
 
 const tempEmailDomains = ['mailinator.com', '10minutemail.com', 'tempmail.com', 'guerrillamail.com', 'throwawaymail.com', 'yopmail.com', 'tempmailo.com'];
 const ADMIN_EMAIL = "sean.storr75@gmail.com";
@@ -41,7 +42,7 @@ app.post('/api/auth/signup', (req, res) => {
         return res.status(400).json({ success: false, message: 'Email already registered!' });
     }
 
-    const newUser = { firstName, lastName, email, password, balanceUSD: 0, date: new Date() };
+    const newUser = { firstName, lastName, email, password, balanceUSD: 0, date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) };
     users.push(newUser);
     res.json({ success: true, message: 'Account registered successfully!' });
 });
@@ -63,7 +64,7 @@ app.post('/api/auth/login', (req, res) => {
         success: true,
         isAdmin: false,
         message: 'Login successful!',
-        user: { firstName: user.firstName, email: user.email, balance: user.balanceUSD }
+        user: { firstName: user.firstName, lastName: user.lastName, email: user.email, balance: user.balanceUSD }
     });
 });
 
@@ -75,7 +76,6 @@ app.get('/api/admin/analytics', (req, res) => {
         .filter(o => new Date(o.rawDate).toLocaleDateString() === today)
         .reduce((sum, o) => sum + o.price, 0);
 
-    // Category Sales Breakdown
     const categorySales = {};
     categories.forEach(cat => { categorySales[cat] = { amount: 0, count: 0 }; });
     
@@ -92,7 +92,7 @@ app.get('/api/admin/analytics', (req, res) => {
         todaySalesUSD: todaySales.toFixed(2),
         totalSoldProducts: orders.length,
         categorySales,
-        usersList: users.map(u => ({ firstName: u.firstName, lastName: u.lastName, email: u.email, balance: u.balanceUSD })),
+        usersList: users,
         ordersList: orders,
         productsList: products
     });
@@ -109,20 +109,38 @@ app.post('/api/admin/add-category', (req, res) => {
     res.json({ success: true, categories });
 });
 
-app.post('/api/admin/add-product', (req, res) => {
-    const { title, category, price, accounts } = req.body;
+// Add / Edit Product
+app.post('/api/admin/save-product', (req, res) => {
+    const { id, title, category, price, imageUrl, accounts } = req.body;
     const accountList = accounts ? accounts.split('\n').map(a => a.trim()).filter(a => a !== '') : [];
 
-    const newProduct = {
-        id: Date.now(),
-        title,
-        category,
-        price: parseFloat(price),
-        stock: accountList
-    };
+    if (id) {
+        // Edit Existing Product
+        const index = products.findIndex(p => p.id === parseInt(id));
+        if (index !== -1) {
+            products[index] = {
+                id: parseInt(id),
+                title,
+                category,
+                price: parseFloat(price),
+                imageUrl: imageUrl || 'https://via.placeholder.com/150',
+                stock: accountList
+            };
+        }
+    } else {
+        // Create New Product
+        const newProduct = {
+            id: Date.now(),
+            title,
+            category,
+            price: parseFloat(price),
+            imageUrl: imageUrl || 'https://via.placeholder.com/150',
+            stock: accountList
+        };
+        products.push(newProduct);
+    }
 
-    products.push(newProduct);
-    res.json({ success: true, message: 'Listing added successfully!' });
+    res.json({ success: true, message: 'Listing saved successfully!' });
 });
 
 app.delete('/api/admin/delete-product/:id', (req, res) => {
@@ -137,6 +155,7 @@ app.get('/api/products', (req, res) => {
         title: p.title,
         category: p.category,
         price: p.price,
+        imageUrl: p.imageUrl,
         stockCount: p.stock.length
     }));
     res.json(safeProducts);
@@ -147,13 +166,22 @@ app.get('/api/user/dashboard/:email', (req, res) => {
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
     const userOrders = orders.filter(o => o.email === req.params.email);
+    const userDeposits = deposits.filter(d => d.email === req.params.email);
+
+    const totalSpent = userOrders.reduce((sum, o) => sum + o.price, 0);
+    const totalDeposited = userDeposits.reduce((sum, d) => sum + d.amount, 0);
+
     res.json({
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        memberSince: user.date,
         balance: user.balanceUSD,
-        totalPurchased: userOrders.length,
-        orders: userOrders
+        totalSpent,
+        totalDeposited,
+        totalOrdersCount: userOrders.length,
+        orders: userOrders,
+        deposits: userDeposits
     });
 });
 
@@ -164,6 +192,16 @@ app.post('/api/deposit', (req, res) => {
 
     let addedUSD = method === 'bkash' ? parseFloat((amount / 120).toFixed(2)) : parseFloat(amount);
     user.balanceUSD += addedUSD;
+
+    const dep = {
+        txId: '#DEP-' + Math.floor(1000 + Math.random() * 9000),
+        email,
+        amount: addedUSD,
+        method: method.toUpperCase(),
+        date: new Date().toLocaleString(),
+        status: 'Completed'
+    };
+    deposits.push(dep);
 
     res.json({ success: true, message: `Deposit successful! $${addedUSD} USD added.`, balance: user.balanceUSD });
 });
@@ -181,18 +219,19 @@ app.post('/api/buy', (req, res) => {
     const deliveredAccount = product.stock.shift();
 
     const order = {
-        orderId: 'ORD-' + Date.now(),
+        orderId: '#ORD-' + Math.floor(1000 + Math.random() * 9000),
         email,
         productTitle: product.title,
         category: product.category,
         accountData: deliveredAccount,
         price: product.price,
         rawDate: new Date(),
-        date: new Date().toLocaleString()
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        status: 'Completed'
     };
     orders.push(order);
 
-    res.json({ success: true, message: 'Purchase successful!', account: deliveredAccount, balance: user.balanceUSD });
+    res.json({ success: true, message: 'Purchase successful!', order, balance: user.balanceUSD });
 });
 
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
