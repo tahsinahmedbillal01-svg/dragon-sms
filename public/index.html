@@ -16,6 +16,12 @@
         .btn-success { background: #16a34a; color: #fff; }
         .btn-danger { background: #dc2626; color: #fff; }
 
+        /* Notification Toast Styling */
+        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 1000; }
+        .toast { padding: 12px 20px; border-radius: 5px; color: #fff; font-weight: bold; margin-bottom: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 10px; transition: all 0.3s ease; }
+        .toast-success { background: #16a34a; }
+        .toast-error { background: #dc2626; }
+
         .cat-bar { display: flex; gap: 10px; background: #fff; padding: 10px 5%; border-bottom: 1px solid #e5e7eb; overflow-x: auto; }
         .cat-btn { padding: 6px 12px; background: #f3f4f6; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; }
         .cat-btn.active { background: #2563eb; color: white; }
@@ -34,22 +40,24 @@
         .list-view .product-card { flex-direction: row; align-items: center; }
 
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:100; }
-        .modal-content { background:#fff; padding:20px; border-radius:8px; width:360px; max-height:80vh; overflow-y:auto; }
+        .modal-content { background:#fff; padding:20px; border-radius:8px; width:380px; max-height:85vh; overflow-y:auto; }
         .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:8px; margin:8px 0; border:1px solid #ccc; border-radius:4px; }
         
-        .method-select { display: flex; gap: 10px; margin: 10px 0; }
-        .method-btn { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; cursor: pointer; text-align: center; font-weight: bold; }
-        .method-btn.selected { border-color: #2563eb; background: #eff6ff; color: #2563eb; }
+        .stat-box { background:#f3f4f6; padding:10px; border-radius:5px; margin-bottom:10px; text-align:center; }
     </style>
 </head>
 <body>
+
+    <div id="toast-container"></div>
 
     <header>
         <div class="logo">🐉 DRAGON SMS</div>
         <div class="user-panel">
             <span id="user-display" style="font-weight: bold;">Not Logged In</span>
-            <button class="btn btn-primary" id="login-btn-nav" onclick="openLogin()">Email Login</button>
-            <button class="btn btn-success" onclick="openDeposit()">Deposit</button>
+            <button class="btn btn-primary" id="login-btn" onclick="openModal('login-modal')">Login</button>
+            <button class="btn btn-success" id="signup-btn" onclick="openModal('signup-modal')">Sign Up</button>
+            <button class="btn btn-danger" id="logout-btn" style="display:none;" onclick="logout()">Logout</button>
+            <button class="btn btn-success" onclick="openModal('deposit-modal')">Deposit</button>
         </div>
     </header>
 
@@ -77,9 +85,23 @@
     <!-- Login Modal -->
     <div id="login-modal" class="modal">
         <div class="modal-content">
-            <h3>User Login</h3>
-            <input type="email" id="login-email" placeholder="Enter your email">
+            <h3>User & Admin Login</h3>
+            <input type="email" id="login-email" placeholder="Email Address">
+            <input type="password" id="login-pass" placeholder="Password">
             <button class="btn btn-primary" style="width:100%;" onclick="login()">Login</button>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signup-modal" class="modal">
+        <div class="modal-content">
+            <h3>Create Account</h3>
+            <input type="text" id="signup-fn" placeholder="First Name">
+            <input type="text" id="signup-ln" placeholder="Last Name">
+            <input type="email" id="signup-email" placeholder="Email Address (No Temp Mail)">
+            <input type="password" id="signup-pass" placeholder="Password">
+            <input type="password" id="signup-cpass" placeholder="Confirm Password">
+            <button class="btn btn-success" style="width:100%;" onclick="signup()">Sign Up</button>
         </div>
     </div>
 
@@ -87,13 +109,11 @@
     <div id="deposit-modal" class="modal">
         <div class="modal-content">
             <h3>Deposit Funds</h3>
-            <p style="font-size:12px; color:gray;">Select Payment Method:</p>
-            <div class="method-select">
-                <div class="method-btn selected" id="m-bkash" onclick="selectMethod('bkash')">bKash (BDT)</div>
-                <div class="method-btn" id="m-crypto" onclick="selectMethod('crypto')">Crypto (USD)</div>
-            </div>
-            <div id="deposit-note" style="font-size:11px; color:#2563eb; margin-bottom:5px;">Rate: 120 BDT = 1 USD</div>
-            <input type="number" id="deposit-amount" placeholder="Enter Amount">
+            <select id="deposit-method">
+                <option value="bkash">bKash (120 BDT = 1 USD)</option>
+                <option value="crypto">Crypto / USDT (Direct USD)</option>
+            </select>
+            <input type="number" id="deposit-amount" placeholder="Amount">
             <button class="btn btn-success" style="width:100%;" onclick="processDeposit()">Submit Deposit</button>
         </div>
     </div>
@@ -107,71 +127,152 @@
         </div>
     </div>
 
-    <!-- Secret Admin Modal -->
+    <!-- Admin Dashboard Modal -->
     <div id="admin-modal" class="modal">
-        <div class="modal-content">
-            <h3>Admin Management</h3>
-            
+        <div class="modal-content" style="width:500px;">
+            <h3>👑 Admin Dashboard</h3>
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <div class="stat-box" style="flex:1;">Total Users: <h4 id="stat-users">0</h4></div>
+                <div class="stat-box" style="flex:1;">Today's Sales: <h4 id="stat-sales">$0.00</h4></div>
+            </div>
+
             <h4 style="margin-top:10px;">Add Category</h4>
             <input type="text" id="new-cat-input" placeholder="Category Name">
             <button class="btn btn-primary" style="width:100%;" onclick="addCategory()">Add Category</button>
 
             <hr style="margin:15px 0;">
 
-            <h4>Add Product Listing</h4>
+            <h4>Upload Listing & Stock</h4>
             <select id="prod-cat-select"></select>
             <input type="text" id="prod-title" placeholder="Listing Title">
             <input type="number" id="prod-price" placeholder="Price in USD (e.g. 0.50)">
             <textarea id="prod-accounts" placeholder="Paste accounts line by line (email:pass)"></textarea>
             <button class="btn btn-success" style="width:100%;" onclick="addProduct()">Upload Listing</button>
-            <button class="btn btn-danger" style="width:100%; margin-top:10px;" onclick="closeModal('admin-modal')">Close Admin</button>
+
+            <hr style="margin:15px 0;">
+            <h4>Sold Products History</h4>
+            <div id="admin-sold-list" style="max-height:150px; overflow-y:auto; font-size:12px; background:#f9f9f9; padding:5px;"></div>
+
+            <button class="btn btn-danger" style="width:100%; margin-top:10px;" onclick="closeModal('admin-modal')">Close Dashboard</button>
         </div>
     </div>
 
     <script>
         let currentUser = localStorage.getItem('userEmail') || '';
-        let selectedMethod = 'bkash';
+        let currentUserName = localStorage.getItem('userName') || '';
+        let isAdminLoggedIn = localStorage.getItem('isAdmin') === 'true';
         let selectedCategory = 'All';
         let allProducts = [];
-        let isAdmin = new URLSearchParams(window.location.search).get('admin') === 'true';
 
-        // Shortcut for Secret Admin Panel (Ctrl + Shift + A)
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-                openAdmin();
+        // Auto Notification System (Green for success, Red for error, disappears in 3 sec)
+        function showNotification(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            
+            document.getElementById('toast-container').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function updateUI() {
+            if (currentUser) {
+                document.getElementById('user-display').innerText = currentUserName || currentUser;
+                document.getElementById('login-btn').style.display = 'none';
+                document.getElementById('signup-btn').style.display = 'none';
+                document.getElementById('logout-btn').style.display = 'inline-block';
+                fetchBalance();
+            } else {
+                document.getElementById('user-display').innerText = 'Not Logged In';
+                document.getElementById('login-btn').style.display = 'inline-block';
+                document.getElementById('signup-btn').style.display = 'inline-block';
+                document.getElementById('logout-btn').style.display = 'none';
+                document.getElementById('user-balance').innerText = '$0.00';
             }
-        });
-
-        if (currentUser) {
-            document.getElementById('user-display').innerText = currentUser;
-            fetchBalance();
         }
 
-        function setView(type) {
-            document.getElementById('product-list').className = 'product-container ' + (type === 'list' ? 'list-view' : 'grid-view');
-        }
-
-        function openLogin() { document.getElementById('login-modal').style.display = 'flex'; }
-        function openDeposit() { document.getElementById('deposit-modal').style.display = 'flex'; }
-        function openAdmin() { fetchCategories(); document.getElementById('admin-modal').style.display = 'flex'; }
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        function login() {
-            const email = document.getElementById('login-email').value;
-            if (email) {
-                currentUser = email;
-                localStorage.setItem('userEmail', email);
-                document.getElementById('user-display').innerText = email;
-                closeModal('login-modal');
-                fetchBalance();
+        async function signup() {
+            const firstName = document.getElementById('signup-fn').value;
+            const lastName = document.getElementById('signup-ln').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-pass').value;
+            const confirmPassword = document.getElementById('signup-cpass').value;
+
+            const res = await fetch('/api/auth/signup', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ firstName, lastName, email, password, confirmPassword })
+            });
+            const data = await res.json();
+            
+            if (data.success) {
+                showNotification(data.message, 'success');
+                closeModal('signup-modal');
+                openModal('login-modal');
+            } else {
+                showNotification(data.message, 'error');
             }
         }
 
-        function selectMethod(method) {
-            selectedMethod = method;
-            document.getElementById('m-bkash').className = 'method-btn ' + (method === 'bkash' ? 'selected' : '');
-            document.getElementById('m-crypto').className = 'method-btn ' + (method === 'crypto' ? 'selected' : '');
-            document.getElementById('deposit-note').innerText = method === 'bkash' ? 'Rate: 120 BDT = 1 USD' : 'Direct USDT / Crypto (1:1 USD)';
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-pass').value;
+
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                showNotification(data.message, 'success');
+                closeModal('login-modal');
+
+                if (data.isAdmin) {
+                    isAdminLoggedIn = true;
+                    localStorage.setItem('isAdmin', 'true');
+                    openAdminDashboard();
+                } else {
+                    currentUser = data.user.email;
+                    currentUserName = data.user.firstName;
+                    localStorage.setItem('userEmail', currentUser);
+                    localStorage.setItem('userName', currentUserName);
+                    updateUI();
+                }
+                fetchProducts();
+            } else {
+                showNotification(data.message, 'error');
+            }
+        }
+
+        function logout() {
+            currentUser = '';
+            currentUserName = '';
+            isAdminLoggedIn = false;
+            localStorage.clear();
+            updateUI();
+            fetchProducts();
+            showNotification('Logged out successfully!', 'success');
+        }
+
+        async function openAdminDashboard() {
+            fetchCategories();
+            const res = await fetch('/api/admin/stats');
+            const data = await res.json();
+
+            document.getElementById('stat-users').innerText = data.totalUsers;
+            document.getElementById('stat-sales').innerText = '$' + data.todaySalesUSD;
+
+            const soldContainer = document.getElementById('admin-sold-list');
+            soldContainer.innerHTML = '';
+            data.soldProductsList.forEach(s => {
+                soldContainer.innerHTML += `<div><strong>${s.productTitle}</strong> ($${s.price}) - ${s.email}</div>`;
+            });
+
+            openModal('admin-modal');
         }
 
         async function fetchBalance() {
@@ -182,33 +283,39 @@
         }
 
         async function processDeposit() {
+            const method = document.getElementById('deposit-method').value;
             const amount = document.getElementById('deposit-amount').value;
-            if (!currentUser) return alert('Please login first!');
+
+            if (!currentUser) return showNotification('Please login first!', 'error');
+            if (!amount || amount <= 0) return showNotification('Enter a valid amount!', 'error');
 
             const res = await fetch('/api/deposit', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ email: currentUser, method: selectedMethod, amount: parseFloat(amount) })
+                body: JSON.stringify({ email: currentUser, method, amount: parseFloat(amount) })
             });
             const data = await res.json();
-            alert(data.message);
-            fetchBalance();
-            closeModal('deposit-modal');
+            if (data.success) {
+                showNotification(data.message, 'success');
+                fetchBalance();
+                closeModal('deposit-modal');
+            } else {
+                showNotification(data.message, 'error');
+            }
         }
 
         async function fetchCategories() {
             const res = await fetch('/api/categories');
             const categories = await res.json();
-            
             const catBar = document.getElementById('category-bar');
             catBar.innerHTML = `<div class="cat-btn ${selectedCategory === 'All' ? 'active' : ''}" onclick="filterCategory('All')">All Categories</div>`;
-            
+
             const select = document.getElementById('prod-cat-select');
-            select.innerHTML = '';
+            if (select) select.innerHTML = '';
 
             categories.forEach(cat => {
                 catBar.innerHTML += `<div class="cat-btn ${selectedCategory === cat ? 'active' : ''}" onclick="filterCategory('${cat}')">${cat}</div>`;
-                select.innerHTML += `<option value="${cat}">${cat}</option>`;
+                if (select) select.innerHTML += `<option value="${cat}">${cat}</option>`;
             });
         }
 
@@ -227,7 +334,6 @@
         function renderProducts() {
             const container = document.getElementById('product-list');
             container.innerHTML = '';
-
             const filtered = selectedCategory === 'All' ? allProducts : allProducts.filter(p => p.category === selectedCategory);
 
             filtered.forEach(p => {
@@ -241,7 +347,7 @@
                         </div>
                         <div>
                             <button class="btn btn-primary" style="width:100%; margin-top:5px;" onclick="buyProduct(${p.id})">Buy Now</button>
-                            ${isAdmin ? `<button class="btn btn-danger" style="width:100%; margin-top:5px;" onclick="deleteProduct(${p.id})">Delete</button>` : ''}
+                            ${isAdminLoggedIn ? `<button class="btn btn-danger" style="width:100%; margin-top:5px;" onclick="deleteProduct(${p.id})">Delete</button>` : ''}
                         </div>
                     </div>
                 `;
@@ -250,12 +356,14 @@
 
         async function addCategory() {
             const cat = document.getElementById('new-cat-input').value;
-            if (!cat) return;
+            if (!cat) return showNotification('Enter category name!', 'error');
+
             await fetch('/api/admin/add-category', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ category: cat })
             });
+            showNotification('Category added successfully!', 'success');
             document.getElementById('new-cat-input').value = '';
             fetchCategories();
         }
@@ -266,13 +374,15 @@
             const price = document.getElementById('prod-price').value;
             const accounts = document.getElementById('prod-accounts').value;
 
+            if (!title || !price || !accounts) return showNotification('Fill all fields!', 'error');
+
             await fetch('/api/admin/add-product', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ title, category, price, accounts })
             });
 
-            alert('Listing added!');
+            showNotification('Listing added successfully!', 'success');
             closeModal('admin-modal');
             fetchProducts();
         }
@@ -280,29 +390,33 @@
         async function deleteProduct(id) {
             if (confirm('Delete this listing?')) {
                 await fetch('/api/admin/delete-product/' + id, { method: 'DELETE' });
+                showNotification('Listing deleted!', 'success');
                 fetchProducts();
             }
         }
 
         async function buyProduct(id) {
-            if (!currentUser) return alert('Please login first!');
+            if (!currentUser) return showNotification('Please login first!', 'error');
+
             const res = await fetch('/api/buy', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ email: currentUser, productId: id })
             });
             const data = await res.json();
+
             if (data.success) {
-                alert('Purchased Account: ' + data.account);
+                showNotification('Purchased Account: ' + data.account, 'success');
                 fetchBalance();
                 fetchProducts();
             } else {
-                alert(data.message);
+                showNotification(data.message, 'error');
             }
         }
 
         async function openOrders() {
-            if (!currentUser) return alert('Please login first!');
+            if (!currentUser) return showNotification('Please login first!', 'error');
+
             const res = await fetch('/api/orders/' + currentUser);
             const orders = await res.json();
             const container = document.getElementById('orders-list');
@@ -319,9 +433,10 @@
                     </div>
                 `;
             });
-            document.getElementById('orders-modal').style.display = 'flex';
+            openModal('orders-modal');
         }
 
+        updateUI();
         fetchCategories();
         fetchProducts();
     </script>
