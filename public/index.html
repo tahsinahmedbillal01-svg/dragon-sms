@@ -9,10 +9,14 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: #ebedf0; color: #333; }
         
-        header { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px 5%; border-bottom: 1px solid #dcdfe6; }
+        header { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px 5%; border-bottom: 1px solid #dcdfe6; flex-wrap: wrap; gap: 15px; }
         .logo { font-size: 22px; font-weight: bold; color: #1a1a1a; display: flex; align-items: center; gap: 8px; }
         .user-panel { display: flex; gap: 10px; align-items: center; }
         
+        .search-box { flex: 1; max-width: 400px; position: relative; }
+        .search-box input { width: 100%; padding: 8px 12px 8px 35px; border-radius: 20px; border: 1px solid #cbd5e1; outline: none; }
+        .search-box i { position: absolute; left: 12px; top: 10px; color: #94a3b8; }
+
         .btn { padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; font-size: 14px; transition: 0.2s; }
         .btn-primary { background: #2563eb; color: #fff; }
         .btn-success { background: #16a34a; color: #fff; }
@@ -25,64 +29,57 @@
         .toast-success { background: #16a34a; }
         .toast-error { background: #dc2626; }
 
-        .cat-bar { display: flex; gap: 10px; background: #fff; padding: 12px 5%; border-bottom: 1px solid #dcdfe6; overflow-x: auto; }
-        .cat-btn { padding: 6px 14px; background: #f3f4f6; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; color: #4b5563; display: flex; align-items: center; gap: 6px; }
+        .cat-bar { display: flex; gap: 10px; background: #fff; padding: 12px 5%; border-bottom: 1px solid #dcdfe6; overflow-x: auto; align-items: center; }
+        .cat-btn { padding: 6px 14px; background: #f3f4f6; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; color: #4b5563; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
         .cat-btn.active { background: #2563eb; color: white; }
+
+        .view-toggle { margin-left: auto; display: flex; gap: 5px; background: #e2e8f0; padding: 4px; border-radius: 6px; }
+        .view-btn { padding: 6px 10px; border-radius: 4px; cursor: pointer; color: #475569; }
+        .view-btn.active { background: #fff; color: #2563eb; font-weight: bold; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
         .container { padding: 20px 5%; }
         .balance-card { background: #fff; padding: 18px 24px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
 
-        /* Categories Section Container like Image */
         .category-block { margin-bottom: 25px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .category-header { background: #1e293b; color: #fff; padding: 12px 20px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; }
+        .category-header { background: #1e293b; color: #fff; padding: 12px 20px; font-weight: bold; font-size: 16px; }
 
-        /* Exact Replica Row Item from User Image */
+        /* Row Layout */
         .row-item { background: #fff; padding: 14px 20px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; gap: 15px; }
-        .row-item:last-child { border-bottom: none; }
         .row-left { display: flex; align-items: center; gap: 15px; flex: 1; cursor: pointer; }
         .row-icon { width: 32px; height: 32px; object-fit: contain; }
         .row-title { font-weight: 600; font-size: 14px; color: #1e293b; }
         .row-title:hover { color: #2563eb; text-decoration: underline; }
-        
         .row-mid { display: flex; gap: 30px; align-items: center; text-align: right; }
-        .stock-text { font-size: 13px; font-weight: bold; color: #334155; }
-        .sold-text { font-size: 11px; color: #64748b; display: block; }
-        .price-text { font-size: 14px; color: #475569; }
-        .price-amount { font-size: 15px; font-weight: bold; color: #0f172a; }
+
+        /* Grid Layout (Box View) */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; padding: 15px; background: #fff; }
+        .grid-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s; background: #f8fafc; }
+        .grid-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .grid-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; cursor: pointer; }
+        .grid-card-img { width: 45px; height: 45px; object-fit: contain; border-radius: 6px; }
 
         /* Modals */
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:999; }
-        .modal-content { background:#fff; padding:25px; border-radius:10px; width:450px; max-height:90vh; overflow-y:auto; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-content { background:#fff; padding:25px; border-radius:10px; width:450px; max-height:90vh; overflow-y:auto; position: relative; }
         .modal-close { position: absolute; top: 15px; right: 18px; font-size: 22px; cursor: pointer; color: #6b7280; font-weight: bold; }
-        
         .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:10px; margin:6px 0 12px 0; border:1px solid #d1d5db; border-radius:6px; font-size: 14px; }
 
-        /* Full Dashboard Layout */
         .dash-modal-layout { width: 95vw; height: 92vh; max-width: 1400px; padding: 0; display: flex; overflow: hidden; border-radius: 12px; }
         .dash-sidebar { width: 230px; background: #0a1128; color: #fff; padding: 20px 0; display: flex; flex-direction: column; justify-content: space-between; }
         .dash-sidebar .brand { padding: 0 20px 20px; font-size: 18px; font-weight: bold; border-bottom: 1px solid #1e293b; }
         .dash-menu { list-style: none; margin-top: 15px; }
         .dash-menu li { padding: 12px 20px; cursor: pointer; font-size: 14px; color: #94a3b8; display: flex; align-items: center; gap: 10px; }
         .dash-menu li.active, .dash-menu li:hover { background: #1d4ed8; color: #fff; }
-        
         .dash-main { flex: 1; background: #f8fafc; padding: 20px; overflow-y: auto; }
-        .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-
-        .stat-cards-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
-        .stat-card { background: #fff; padding: 18px; border-radius: 10px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 15px; }
-        .stat-icon { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #fff; }
 
         .admin-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px; margin-bottom: 20px; }
         .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
         .data-table th, .data-table td { border-bottom: 1px solid #f1f5f9; padding: 10px; text-align: left; }
-        .data-table th { background: #f8fafc; color: #64748b; font-weight: 600; }
-        .status-badge { padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; background: #dcfce7; color: #15803d; }
-        .status-pending { background: #fef3c7; color: #d97706; }
 
-        /* Floating Live Chat Box */
+        /* Floating Live Chat */
         .chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
-        .chat-btn-float { background: #2563eb; color: #fff; padding: 12px 20px; border-radius: 30px; font-weight: bold; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; }
-        .chat-box { display: none; width: 320px; height: 400px; background: #fff; border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); flex-direction: column; overflow: hidden; position: absolute; bottom: 60px; right: 0; }
+        .chat-btn-float { background: #2563eb; color: #fff; padding: 12px 20px; border-radius: 30px; font-weight: bold; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .chat-box { display: none; width: 320px; height: 400px; background: #fff; border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); flex-direction: column; position: absolute; bottom: 60px; right: 0; }
         .chat-header { background: #2563eb; color: #fff; padding: 12px 15px; font-weight: bold; display: flex; justify-content: space-between; }
         .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #f8fafc; font-size: 13px; }
         .chat-msg { margin-bottom: 10px; padding: 8px 12px; border-radius: 8px; max-width: 80%; }
@@ -97,18 +94,31 @@
 
     <header>
         <div class="logo">🐉 DRAGON SMS</div>
+        
+        <!-- Live Instant Search Bar -->
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search-input" placeholder="Search accounts or products..." onkeyup="filterProductsBySearch()">
+        </div>
+
         <div class="user-panel">
             <span id="user-display" style="font-weight: 600; color: #4b5563;">Not Logged In</span>
             <button class="btn btn-primary" id="login-btn" onclick="openModal('login-modal')">Login</button>
             <button class="btn btn-success" id="signup-btn" onclick="openModal('signup-modal')">Sign Up</button>
-            <button class="btn btn-primary" id="dashboard-btn" style="display:none;" onclick="openUserDashboard()">My Dashboard</button>
+            <button class="btn btn-primary" id="dashboard-btn" style="display:none;" onclick="openUserDashboard()">Dashboard</button>
             <button class="btn btn-danger" id="logout-btn" style="display:none;" onclick="logout()">Logout</button>
             <button class="btn btn-success" onclick="openModal('deposit-modal')">Deposit</button>
         </div>
     </header>
 
-    <div class="cat-bar" id="category-bar">
-        <div class="cat-btn active" onclick="filterCategory('All')">All Categories</div>
+    <div class="cat-bar">
+        <div id="category-bar" style="display:flex; gap:10px;"></div>
+        
+        <!-- View Toggle (Box vs Row View) -->
+        <div class="view-toggle">
+            <div class="view-btn" id="btn-view-row" onclick="setProductView('row')"><i class="fas fa-list"></i> Row</div>
+            <div class="view-btn" id="btn-view-grid" onclick="setProductView('grid')"><i class="fas fa-th-large"></i> Box</div>
+        </div>
     </div>
 
     <div class="container">
@@ -119,20 +129,29 @@
             <button class="btn btn-primary" id="admin-dash-btn" style="display:none; background:#8b5cf6;" onclick="openAdminDashboard()">👑 Admin Panel</button>
         </div>
 
-        <!-- Rendered Row Layout Products -->
         <div id="products-wrapper"></div>
     </div>
 
-    <!-- Description Modal -->
+    <!-- Enhanced Description Modal with Integrated Buy Button -->
     <div id="desc-modal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="width:500px;">
             <span class="modal-close" onclick="closeModal('desc-modal')">&times;</span>
-            <h3 id="desc-title" style="margin-bottom: 10px; color:#1e293b;">Product Title</h3>
-            <p id="desc-body" style="font-size: 14px; color:#475569; line-height: 1.5; white-space: pre-line;"></p>
+            <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
+                <img id="desc-img" src="" style="width:50px; height:50px; object-fit:contain; border-radius:8px;">
+                <div>
+                    <h3 id="desc-title" style="color:#1e293b; font-size:16px;">Product Title</h3>
+                    <span style="font-size:12px; color:#64748b;" id="desc-price-tag">Price: $0.00</span>
+                </div>
+            </div>
+            <div style="background:#f8fafc; padding:15px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:15px;">
+                <h4 style="font-size:13px; color:#475569; margin-bottom:5px;">Product Description:</h4>
+                <p id="desc-body" style="font-size: 14px; color:#334155; line-height: 1.6; white-space: pre-line;"></p>
+            </div>
+            <button class="btn btn-buy" style="width:100%; font-size:15px;" id="desc-buy-btn"><i class="fas fa-shopping-cart"></i> Buy Now</button>
         </div>
     </div>
 
-    <!-- Buy Modal with Quantity & Live Total Calculator -->
+    <!-- Buy Modal -->
     <div id="buy-modal" class="modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal('buy-modal')">&times;</span>
@@ -140,11 +159,11 @@
             <p style="font-size:13px; color:gray;">Price per pc: $<span id="buy-unit-price">0.00</span></p>
             <input type="hidden" id="buy-prod-id">
             
-            <label style="margin-top:10px; font-weight:bold;">Select Quantity (How many pieces?):</label>
+            <label style="margin-top:10px; font-weight:bold;">Select Quantity:</label>
             <input type="number" id="buy-qty" value="1" min="1" oninput="calculateBuyTotal()">
 
             <div style="background:#f1f5f9; padding:12px; border-radius:6px; margin-bottom:15px;">
-                <span style="font-size:14px; color:#475569;">Total Amount:</span>
+                <span style="font-size:14px; color:#475569;">Total Price:</span>
                 <h3 style="color:#16a34a;" id="buy-total-calc">$0.00 USD</h3>
             </div>
 
@@ -152,80 +171,146 @@
         </div>
     </div>
 
-    <!-- Login Modal -->
+    <!-- Auth & Other Modals -->
     <div id="login-modal" class="modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal('login-modal')">&times;</span>
-            <h3 style="margin-bottom: 15px;">User & Admin Login</h3>
-            <label>Email Address</label>
-            <input type="email" id="login-email" placeholder="Enter your email">
+            <h3 style="margin-bottom: 15px;">Login</h3>
+            <label>Email</label>
+            <input type="email" id="login-email">
             <label>Password</label>
-            <input type="password" id="login-pass" placeholder="Enter password">
+            <input type="password" id="login-pass">
             <button class="btn btn-primary" style="width:100%; margin-top:5px;" onclick="login()">Login</button>
             <p style="margin-top:10px; text-align:right;"><a href="javascript:void(0)" onclick="closeModal('login-modal'); openModal('forgot-modal')" style="color:#2563eb; font-size:12px;">Forgot Password?</a></p>
         </div>
     </div>
 
-    <!-- Forgot Password Modal -->
     <div id="forgot-modal" class="modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal('forgot-modal')">&times;</span>
             <h3 style="margin-bottom: 15px;">Reset Password</h3>
             <label>Registered Email</label>
-            <input type="email" id="forgot-email" placeholder="Enter your email">
+            <input type="email" id="forgot-email">
             <label>New Password</label>
-            <input type="password" id="forgot-new-pass" placeholder="Enter new password">
+            <input type="password" id="forgot-new-pass">
             <button class="btn btn-success" style="width:100%;" onclick="resetPassword()">Update Password</button>
         </div>
     </div>
 
-    <!-- Signup Modal -->
     <div id="signup-modal" class="modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal('signup-modal')">&times;</span>
-            <h3 style="margin-bottom: 15px;">Create Account</h3>
-            <label>First Name</label>
-            <input type="text" id="signup-fn" placeholder="First Name">
-            <label>Last Name</label>
-            <input type="text" id="signup-ln" placeholder="Last Name">
-            <label>Email Address</label>
-            <input type="email" id="signup-email" placeholder="Email Address">
-            <label>Password</label>
-            <input type="password" id="signup-pass" placeholder="Password">
-            <label>Confirm Password</label>
-            <input type="password" id="signup-cpass" placeholder="Confirm Password">
+            <h3 style="margin-bottom: 15px;">Sign Up</h3>
+            <label>First Name</label><input type="text" id="signup-fn">
+            <label>Last Name</label><input type="text" id="signup-ln">
+            <label>Email</label><input type="email" id="signup-email">
+            <label>Password</label><input type="password" id="signup-pass">
+            <label>Confirm Password</label><input type="password" id="signup-cpass">
             <button class="btn btn-success" style="width:100%; margin-top:10px;" onclick="signup()">Sign Up</button>
         </div>
     </div>
 
-    <!-- Deposit Modal with TrxID -->
     <div id="deposit-modal" class="modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal('deposit-modal')">&times;</span>
             <h3 style="margin-bottom: 15px;">Deposit Funds</h3>
-            <label>Payment Method</label>
+            <label>Method</label>
             <select id="deposit-method">
                 <option value="bkash">bKash (120 BDT = 1 USD)</option>
-                <option value="crypto">Crypto / USDT (Direct USD)</option>
+                <option value="crypto">Crypto / USDT</option>
             </select>
-            <label>Amount</label>
-            <input type="number" id="deposit-amount" placeholder="Enter Amount">
-            <label>Transaction ID (TrxID)</label>
-            <input type="text" id="deposit-trxid" placeholder="Enter bKash/Crypto TrxID">
-            <button class="btn btn-success" style="width:100%;" onclick="processDeposit()">Submit Deposit Request</button>
+            <label>Amount</label><input type="number" id="deposit-amount">
+            <label>Transaction ID (TrxID)</label><input type="text" id="deposit-trxid">
+            <button class="btn btn-success" style="width:100%;" onclick="processDeposit()">Submit Deposit</button>
         </div>
     </div>
 
-    <!-- Purchase Success Popup -->
     <div id="purchase-success-modal" class="modal">
         <div class="modal-content" style="width: 500px;">
             <span class="modal-close" onclick="closeModal('purchase-success-modal')">&times;</span>
             <h3 style="color:#16a34a; margin-bottom:10px;"><i class="fas fa-check-circle"></i> Purchase Successful!</h3>
-            <p style="font-size:13px; color:gray; margin-bottom:10px;">Your accounts/keys data is ready below:</p>
             <textarea id="purchased-data-text" rows="5" readonly style="background:#f8fafc; font-family:monospace;"></textarea>
             <div style="display:flex; gap:10px; margin-top:10px;">
-                <button class="btn btn-primary" style="flex:1;" onclick="copyPurchasedData()"><i class="fas fa-copy"></i> Copy Data</button>
-                <button class="btn btn-success" style="flex:1;" onclick="downloadPurchasedData()"><i class="fas fa-download"></i> Download File</button>
+                <button class="btn btn-primary" style="flex:1;" onclick="copyPurchasedData()"><i class="fas fa-copy"></i> Copy</button>
+                <button class="btn btn-success" style="flex:1;" onclick="downloadPurchasedData()"><i class="fas fa-download"></i> Download</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div id="admin-modal" class="modal">
+        <div class="modal-content dash-modal-layout">
+            <div class="dash-sidebar">
+                <div>
+                    <div class="brand">👑 Admin Panel</div>
+                    <ul class="dash-menu">
+                        <li id="a-tab-dash" class="active" onclick="switchAdminTab('dash')"><i class="fas fa-th-large"></i> Control Center</li>
+                        <li id="a-tab-chat" onclick="switchAdminTab('chat')"><i class="fas fa-comments"></i> Live Support Chat</li>
+                    </ul>
+                </div>
+                <div style="padding: 0 20px;"><button class="btn btn-danger" style="width: 100%;" onclick="logout()">Logout</button></div>
+            </div>
+
+            <div class="dash-main">
+                <div class="dash-header">
+                    <h2>Admin Dashboard</h2>
+                    <button class="btn btn-danger" onclick="closeModal('admin-modal')">Close</button>
+                </div>
+
+                <div id="a-sec-dash">
+                    <div class="admin-card">
+                        <h4><i class="fas fa-clock"></i> Pending Deposit Requests</h4>
+                        <div id="admin-pending-deposits"></div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                        <div class="admin-card">
+                            <h4><i class="fas fa-folder"></i> Add Category</h4>
+                            <input type="text" id="new-cat-name" placeholder="Category Name">
+                            <input type="text" id="new-cat-icon" placeholder="Category Logo URL">
+                            <button class="btn btn-primary" style="width:100%;" onclick="addCategory()">Add Category</button>
+                        </div>
+
+                        <div class="admin-card">
+                            <h4><i class="fas fa-cloud-upload-alt"></i> Listing Form (File Upload Supported)</h4>
+                            <input type="hidden" id="edit-prod-id">
+                            <select id="prod-cat-select"></select>
+                            <input type="text" id="prod-title" placeholder="Listing Title">
+                            <input type="text" id="prod-desc" placeholder="Product Description">
+                            <input type="number" id="prod-price" placeholder="Price in USD">
+                            
+                            <!-- File Browser Image Upload -->
+                            <label style="font-size:12px; font-weight:bold;">Upload Image/Icon from Gallery:</label>
+                            <input type="file" id="prod-file-input" accept="image/*" onchange="convertImageToBase64()">
+                            <input type="hidden" id="prod-img">
+
+                            <textarea id="prod-accounts" placeholder="Paste account stock data line by line" rows="3"></textarea>
+                            <button class="btn btn-success" style="width:100%;" onclick="saveProduct()">Save Product Listing</button>
+                        </div>
+                    </div>
+
+                    <div class="admin-card">
+                        <h4><i class="fas fa-list-ul"></i> Product Listings</h4>
+                        <div id="admin-listings-table" style="max-height:200px; overflow-y:auto;"></div>
+                    </div>
+                </div>
+
+                <!-- Admin Live Chat Section -->
+                <div id="a-sec-chat" style="display:none;">
+                    <div class="admin-card">
+                        <h4><i class="fas fa-comments"></i> Active Customer Support Chats</h4>
+                        <div style="display:flex; gap:20px; height:400px; margin-top:15px;">
+                            <div id="admin-chat-users-list" style="width:200px; border-right:1px solid #cbd5e1; overflow-y:auto;"></div>
+                            <div style="flex:1; display:flex; flex-direction:column;">
+                                <div id="admin-chat-messages" style="flex:1; background:#f1f5f9; padding:15px; overflow-y:auto; border-radius:6px;">Select a user to chat</div>
+                                <div style="display:flex; gap:10px; margin-top:10px;">
+                                    <input type="text" id="admin-chat-input" placeholder="Type reply..." style="margin:0;">
+                                    <button class="btn btn-primary" onclick="sendAdminChatReply()">Send Reply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -239,152 +324,37 @@
                     <ul class="dash-menu">
                         <li id="u-tab-dash" class="active" onclick="switchUserTab('dash')"><i class="fas fa-th-large"></i> Dashboard</li>
                         <li id="u-tab-orders" onclick="switchUserTab('orders')"><i class="fas fa-shopping-bag"></i> My Orders</li>
-                        <li id="u-tab-deposits" onclick="switchUserTab('deposits')"><i class="fas fa-wallet"></i> Deposit History</li>
-                        <li id="u-tab-downloads" onclick="switchUserTab('downloads')"><i class="fas fa-download"></i> Downloads</li>
+                        <li id="u-tab-deposits" onclick="switchUserTab('deposits')"><i class="fas fa-wallet"></i> Deposits</li>
                     </ul>
                 </div>
-                <div style="padding: 0 20px;">
-                    <button class="btn btn-danger" style="width: 100%;" onclick="logout()">Logout</button>
-                </div>
+                <div style="padding: 0 20px;"><button class="btn btn-danger" style="width: 100%;" onclick="logout()">Logout</button></div>
             </div>
 
             <div class="dash-main">
                 <div class="dash-header">
-                    <h2>Welcome, <span id="u-dash-name">User</span>! 👋</h2>
+                    <h2>Welcome, <span id="u-dash-name">User</span>!</h2>
                     <button class="btn btn-danger" onclick="closeModal('user-modal')">Close</button>
                 </div>
-
                 <div id="u-section-dash" class="u-tab-content">
-                    <div class="stat-cards-grid">
-                        <div class="stat-card">
-                            <div class="stat-icon" style="background:#2563eb;"><i class="fas fa-box"></i></div>
-                            <div>
-                                <span style="font-size:12px; color:#64748b;">Total Orders</span>
-                                <h3 id="u-stat-orders">0</h3>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon" style="background:#16a34a;"><i class="fas fa-dollar-sign"></i></div>
-                            <div>
-                                <span style="font-size:12px; color:#64748b;">Total Spent</span>
-                                <h3 id="u-stat-spent" style="color:#16a34a;">$0.00</h3>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon" style="background:#8b5cf6;"><i class="fas fa-wallet"></i></div>
-                            <div>
-                                <span style="font-size:12px; color:#64748b;">Balance</span>
-                                <h3 id="u-stat-bal" style="color:#8b5cf6;">$0.00</h3>
-                            </div>
-                        </div>
+                    <div class="admin-card">
+                        <h3>Total Spent: <span id="u-stat-spent" style="color:#16a34a;">$0.00</span></h3>
                     </div>
                 </div>
-
                 <div id="u-section-orders" class="u-tab-content" style="display:none;">
-                    <div class="admin-card">
-                        <h4><i class="fas fa-shopping-bag"></i> My Orders</h4>
-                        <div id="u-orders-table"></div>
-                    </div>
+                    <div class="admin-card"><h4>My Orders</h4><div id="u-orders-table"></div></div>
                 </div>
-
                 <div id="u-section-deposits" class="u-tab-content" style="display:none;">
-                    <div class="admin-card">
-                        <h4><i class="fas fa-wallet"></i> Deposit History</h4>
-                        <div id="u-deposits-table"></div>
-                    </div>
-                </div>
-
-                <div id="u-section-downloads" class="u-tab-content" style="display:none;">
-                    <div class="admin-card">
-                        <h4><i class="fas fa-download"></i> Downloads</h4>
-                        <div id="u-downloads-table"></div>
-                    </div>
+                    <div class="admin-card"><h4>Deposits History</h4><div id="u-deposits-table"></div></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Admin Panel Modal -->
-    <div id="admin-modal" class="modal">
-        <div class="modal-content dash-modal-layout">
-            <div class="dash-sidebar">
-                <div>
-                    <div class="brand">👑 Admin Panel</div>
-                    <ul class="dash-menu">
-                        <li class="active"><i class="fas fa-th-large"></i> Control Center</li>
-                    </ul>
-                </div>
-                <div style="padding: 0 20px;">
-                    <button class="btn btn-danger" style="width: 100%;" onclick="logout()">Logout</button>
-                </div>
-            </div>
-
-            <div class="dash-main">
-                <div class="dash-header">
-                    <h2>Admin Management Dashboard</h2>
-                    <button class="btn btn-danger" onclick="closeModal('admin-modal')">Close Dashboard</button>
-                </div>
-
-                <div class="stat-cards-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background:#2563eb;"><i class="fas fa-users"></i></div>
-                        <div>
-                            <span style="font-size:12px; color:#64748b;">Total Users</span>
-                            <h3 id="stat-users">0</h3>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background:#16a34a;"><i class="fas fa-shopping-cart"></i></div>
-                        <div>
-                            <span style="font-size:12px; color:#64748b;">Today's Sales</span>
-                            <h3 id="stat-sales" style="color:#16a34a;">$0.00</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Admin Approve Deposit Requests Section -->
-                <div class="admin-card">
-                    <h4><i class="fas fa-clock"></i> Pending Deposit Requests (Confirm TrxID)</h4>
-                    <div id="admin-pending-deposits"></div>
-                </div>
-
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-                    <div class="admin-card">
-                        <h4><i class="fas fa-folder"></i> Add Category with Logo</h4>
-                        <input type="text" id="new-cat-name" placeholder="Category Name (e.g. Facebook)">
-                        <input type="text" id="new-cat-icon" placeholder="Category Logo/Icon URL">
-                        <button class="btn btn-primary" style="width:100%;" onclick="addCategory()">Add Category</button>
-                    </div>
-
-                    <div class="admin-card">
-                        <h4 id="form-title-heading"><i class="fas fa-cloud-upload-alt"></i> Listing / Restock Form</h4>
-                        <input type="hidden" id="edit-prod-id">
-                        <select id="prod-cat-select"></select>
-                        <input type="text" id="prod-title" placeholder="Listing Title">
-                        <input type="text" id="prod-desc" placeholder="Product Description Details">
-                        <input type="number" id="prod-price" placeholder="Price in USD">
-                        <input type="text" id="prod-img" placeholder="Product Icon / Image URL">
-                        <textarea id="prod-accounts" placeholder="Paste account stock data line by line" rows="3"></textarea>
-                        <button class="btn btn-success" style="width:100%;" onclick="saveProduct()">Save Product</button>
-                    </div>
-                </div>
-
-                <div class="admin-card">
-                    <h4><i class="fas fa-list-ul"></i> Active Product Listings</h4>
-                    <div id="admin-listings-table" style="max-height:200px; overflow-y:auto;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Floating Live Chat Support System -->
+    <!-- Floating Live Chat -->
     <div class="chat-widget">
-        <button class="chat-btn-float" onclick="toggleChat()"><i class="fas fa-comments"></i> Live Support Chat</button>
+        <button class="chat-btn-float" onclick="toggleChat()"><i class="fas fa-comments"></i> Live Chat</button>
         <div class="chat-box" id="chat-box">
-            <div class="chat-header">
-                <span>💬 Live Support Chat</span>
-                <span style="cursor:pointer;" onclick="toggleChat()">&times;</span>
-            </div>
+            <div class="chat-header"><span>💬 Live Support</span><span style="cursor:pointer;" onclick="toggleChat()">&times;</span></div>
             <div class="chat-body" id="chat-body"></div>
             <div class="chat-footer">
                 <input type="text" id="chat-input" placeholder="Type a message..." style="margin:0;">
@@ -398,9 +368,11 @@
         let currentUserName = localStorage.getItem('userName') || '';
         let isAdminLoggedIn = localStorage.getItem('isAdmin') === 'true';
         let selectedCategory = 'All';
+        let currentView = 'row'; // 'row' or 'grid'
         let allProducts = [];
         let allCategories = [];
         let currentPurchasedData = "";
+        let selectedChatUser = "";
 
         function showNotification(message, type = 'success') {
             const toast = document.createElement('div');
@@ -424,18 +396,186 @@
                 document.getElementById('signup-btn').style.display = 'inline-block';
                 document.getElementById('dashboard-btn').style.display = 'none';
                 document.getElementById('logout-btn').style.display = 'none';
-                document.getElementById('user-balance').innerText = '$0.00';
             }
-
-            if (isAdminLoggedIn) {
-                document.getElementById('admin-dash-btn').style.display = 'inline-block';
-            } else {
-                document.getElementById('admin-dash-btn').style.display = 'none';
-            }
+            document.getElementById('admin-dash-btn').style.display = isAdminLoggedIn ? 'inline-block' : 'none';
+            setProductView(currentView);
         }
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function setProductView(view) {
+            currentView = view;
+            document.getElementById('btn-view-row').classList.toggle('active', view === 'row');
+            document.getElementById('btn-view-grid').classList.toggle('active', view === 'grid');
+            renderProducts();
+        }
+
+        async function fetchCategories() {
+            const res = await fetch('/api/categories');
+            allCategories = await res.json();
+
+            const catBar = document.getElementById('category-bar');
+            catBar.innerHTML = `<div class="cat-btn ${selectedCategory === 'All' ? 'active' : ''}" onclick="filterCategory('All')">All Categories</div>`;
+
+            const select = document.getElementById('prod-cat-select');
+            if (select) select.innerHTML = '';
+
+            allCategories.forEach(cat => {
+                const iconHTML = cat.icon ? `<img src="${cat.icon}" style="width:16px; height:16px;">` : '';
+                catBar.innerHTML += `<div class="cat-btn ${selectedCategory === cat.name ? 'active' : ''}" onclick="filterCategory('${cat.name}')">${iconHTML} ${cat.name}</div>`;
+                if (select) select.innerHTML += `<option value="${cat.name}">${cat.name}</option>`;
+            });
+        }
+
+        function filterCategory(catName) {
+            selectedCategory = catName;
+            fetchCategories();
+            renderProducts();
+        }
+
+        async function fetchProducts() {
+            const res = await fetch('/api/products');
+            allProducts = await res.json();
+            renderProducts();
+        }
+
+        function filterProductsBySearch() {
+            renderProducts();
+        }
+
+        // Convert Uploaded File from Gallery to Base64 Image String
+        function convertImageToBase64() {
+            const file = document.getElementById('prod-file-input').files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    document.getElementById('prod-img').value = reader.result;
+                    showNotification('Image selected from gallery!', 'success');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function renderProducts() {
+            const wrapper = document.getElementById('products-wrapper');
+            wrapper.innerHTML = '';
+
+            const searchQuery = document.getElementById('search-input').value.toLowerCase();
+            const categoriesToDisplay = selectedCategory === 'All' ? allCategories.map(c => c.name) : [selectedCategory];
+
+            categoriesToDisplay.forEach(catName => {
+                let categoryProds = allProducts.filter(p => p.category === catName);
+                if (searchQuery) {
+                    categoryProds = categoryProds.filter(p => p.title.toLowerCase().includes(searchQuery));
+                }
+
+                if (categoryProds.length === 0) return;
+                const catObj = allCategories.find(c => c.name === catName) || {};
+
+                if (currentView === 'row') {
+                    let itemsHTML = '';
+                    categoryProds.forEach(p => {
+                        const icon = p.imageUrl || catObj.icon || 'https://via.placeholder.com/32';
+                        itemsHTML += `
+                            <div class="row-item">
+                                <div class="row-left" onclick="showDescription(${p.id})">
+                                    <img src="${icon}" class="row-icon">
+                                    <span class="row-title">${p.title}</span>
+                                </div>
+                                <div class="row-mid">
+                                    <div><span class="stock-text" style="font-weight:bold;">${p.stockCount} pcs.</span><br><span style="font-size:11px; color:gray;">Sold ${p.soldCount}</span></div>
+                                    <div><span style="font-size:13px; color:gray;">Price</span><div style="font-weight:bold;">from $${p.price.toFixed(2)}</div></div>
+                                    <button class="btn btn-buy" onclick="openBuyModal(${p.id})"><i class="fas fa-shopping-cart"></i> Buy</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    wrapper.innerHTML += `<div class="category-block"><div class="category-header">${catName} Accounts</div>${itemsHTML}</div>`;
+                } else { // Box / Grid View
+                    let gridHTML = '';
+                    categoryProds.forEach(p => {
+                        const icon = p.imageUrl || catObj.icon || 'https://via.placeholder.com/45';
+                        gridHTML += `
+                            <div class="grid-card">
+                                <div>
+                                    <div class="grid-card-top" onclick="showDescription(${p.id})">
+                                        <img src="${icon}" class="grid-card-img">
+                                        <div style="font-weight:bold; font-size:14px; color:#1e293b;">${p.title}</div>
+                                    </div>
+                                    <div style="font-size:12px; color:gray; margin-bottom:10px;">In Stock: <b>${p.stockCount} pcs</b> | Sold: ${p.soldCount}</div>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                                    <div style="font-size:16px; font-weight:bold; color:#16a34a;">$${p.price.toFixed(2)}</div>
+                                    <button class="btn btn-buy" onclick="openBuyModal(${p.id})">Buy</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    wrapper.innerHTML += `<div class="category-block"><div class="category-header">${catName} Accounts</div><div class="grid-container">${gridHTML}</div></div>`;
+                }
+            });
+        }
+
+        function showDescription(productId) {
+            const p = allProducts.find(item => item.id === productId);
+            if (!p) return;
+
+            document.getElementById('desc-img').src = p.imageUrl || 'https://via.placeholder.com/50';
+            document.getElementById('desc-title').innerText = p.title;
+            document.getElementById('desc-price-tag').innerText = `Price: $${p.price.toFixed(2)} USD | In Stock: ${p.stockCount} pcs`;
+            document.getElementById('desc-body').innerText = p.description || "No additional detailed description available for this item.";
+            
+            const buyBtn = document.getElementById('desc-buy-btn');
+            buyBtn.onclick = function() {
+                closeModal('desc-modal');
+                openBuyModal(p.id);
+            };
+
+            openModal('desc-modal');
+        }
+
+        function openBuyModal(productId) {
+            if (!currentUser) return showNotification('Please login first!', 'error');
+            const p = allProducts.find(item => item.id === productId);
+            if (!p) return;
+
+            document.getElementById('buy-prod-id').value = p.id;
+            document.getElementById('buy-title').innerText = p.title;
+            document.getElementById('buy-unit-price').innerText = p.price.toFixed(2);
+            document.getElementById('buy-qty').value = 1;
+            calculateBuyTotal();
+            openModal('buy-modal');
+        }
+
+        function calculateBuyTotal() {
+            const unitPrice = parseFloat(document.getElementById('buy-unit-price').innerText);
+            const qty = parseInt(document.getElementById('buy-qty').value) || 1;
+            document.getElementById('buy-total-calc').innerText = '$' + (unitPrice * qty).toFixed(2) + ' USD';
+        }
+
+        async function confirmPurchase() {
+            const productId = parseInt(document.getElementById('buy-prod-id').value);
+            const quantity = parseInt(document.getElementById('buy-qty').value);
+
+            const res = await fetch('/api/buy', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email: currentUser, productId, quantity })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                currentPurchasedData = data.order.accountData;
+                document.getElementById('purchased-data-text').value = currentPurchasedData;
+                closeModal('buy-modal');
+                fetchBalance();
+                fetchProducts();
+                openModal('purchase-success-modal');
+            } else {
+                showNotification(data.message, 'error');
+            }
+        }
 
         async function signup() {
             const firstName = document.getElementById('signup-fn').value;
@@ -492,7 +632,6 @@
             if (data.success) {
                 showNotification(data.message, 'success');
                 closeModal('login-modal');
-
                 if (data.isAdmin) {
                     isAdminLoggedIn = true;
                     localStorage.setItem('isAdmin', 'true');
@@ -520,151 +659,21 @@
             closeModal('user-modal');
             updateUI();
             fetchProducts();
-            showNotification('Logged out successfully!', 'success');
-        }
-
-        async function fetchCategories() {
-            const res = await fetch('/api/categories');
-            allCategories = await res.json();
-
-            const catBar = document.getElementById('category-bar');
-            catBar.innerHTML = `<div class="cat-btn ${selectedCategory === 'All' ? 'active' : ''}" onclick="filterCategory('All')">All Categories</div>`;
-
-            const select = document.getElementById('prod-cat-select');
-            if (select) select.innerHTML = '';
-
-            allCategories.forEach(cat => {
-                const iconHTML = cat.icon ? `<img src="${cat.icon}" style="width:16px; height:16px;">` : '';
-                catBar.innerHTML += `<div class="cat-btn ${selectedCategory === cat.name ? 'active' : ''}" onclick="filterCategory('${cat.name}')">${iconHTML} ${cat.name}</div>`;
-                if (select) select.innerHTML += `<option value="${cat.name}">${cat.name}</option>`;
-            });
-        }
-
-        function filterCategory(catName) {
-            selectedCategory = catName;
-            fetchCategories();
-            renderProducts();
-        }
-
-        async function fetchProducts() {
-            const res = await fetch('/api/products');
-            allProducts = await res.json();
-            renderProducts();
-        }
-
-        // Render Row Layout Exact Replica from Image
-        function renderProducts() {
-            const wrapper = document.getElementById('products-wrapper');
-            wrapper.innerHTML = '';
-
-            const categoriesToDisplay = selectedCategory === 'All' 
-                ? allCategories.map(c => c.name) 
-                : [selectedCategory];
-
-            categoriesToDisplay.forEach(catName => {
-                const categoryProds = allProducts.filter(p => p.category === catName);
-                if (categoryProds.length === 0) return;
-
-                const catObj = allCategories.find(c => c.name === catName) || {};
-                let itemsHTML = '';
-
-                categoryProds.forEach(p => {
-                    const icon = p.imageUrl || catObj.icon || 'https://via.placeholder.com/32';
-                    itemsHTML += `
-                        <div class="row-item">
-                            <div class="row-left" onclick="showDescription('${p.title.replace(/'/g, "\\'")}', '${(p.description || 'No additional description.').replace(/'/g, "\\'")}')">
-                                <img src="${icon}" class="row-icon" alt="icon">
-                                <span class="row-title">${p.title}</span>
-                            </div>
-                            <div class="row-mid">
-                                <div>
-                                    <span class="stock-text">${p.stockCount} pcs.</span>
-                                    <span class="sold-text">Sold ${p.soldCount} pieces</span>
-                                </div>
-                                <div>
-                                    <span class="price-text">Price per pc</span>
-                                    <div class="price-amount">from $${p.price.toFixed(2)}</div>
-                                </div>
-                                <button class="btn btn-buy" onclick="openBuyModal(${p.id})"><i class="fas fa-shopping-cart"></i> Buy</button>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                wrapper.innerHTML += `
-                    <div class="category-block">
-                        <div class="category-header">${catName} Accounts</div>
-                        ${itemsHTML}
-                    </div>
-                `;
-            });
-        }
-
-        function showDescription(title, body) {
-            document.getElementById('desc-title').innerText = title;
-            document.getElementById('desc-body').innerText = body;
-            openModal('desc-modal');
-        }
-
-        function openBuyModal(productId) {
-            if (!currentUser) return showNotification('Please login first!', 'error');
-            const p = allProducts.find(item => item.id === productId);
-            if (!p) return;
-
-            document.getElementById('buy-prod-id').value = p.id;
-            document.getElementById('buy-title').innerText = p.title;
-            document.getElementById('buy-unit-price').innerText = p.price.toFixed(2);
-            document.getElementById('buy-qty').value = 1;
-            calculateBuyTotal();
-            openModal('buy-modal');
-        }
-
-        function calculateBuyTotal() {
-            const unitPrice = parseFloat(document.getElementById('buy-unit-price').innerText);
-            const qty = parseInt(document.getElementById('buy-qty').value) || 1;
-            const total = unitPrice * qty;
-            document.getElementById('buy-total-calc').innerText = '$' + total.toFixed(2) + ' USD';
-        }
-
-        async function confirmPurchase() {
-            const productId = parseInt(document.getElementById('buy-prod-id').value);
-            const quantity = parseInt(document.getElementById('buy-qty').value);
-
-            const res = await fetch('/api/buy', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ email: currentUser, productId, quantity })
-            });
-            const data = await res.json();
-
-            if (data.success) {
-                currentPurchasedData = data.order.accountData;
-                document.getElementById('purchased-data-text').value = currentPurchasedData;
-                closeModal('buy-modal');
-                fetchBalance();
-                fetchProducts();
-                openModal('purchase-success-modal');
-            } else {
-                showNotification(data.message, 'error');
-            }
+            showNotification('Logged out!', 'success');
         }
 
         async function addCategory() {
             const name = document.getElementById('new-cat-name').value;
             const icon = document.getElementById('new-cat-icon').value;
-            if (!name) return showNotification('Enter category name!', 'error');
+            if (!name) return;
 
             await fetch('/api/admin/add-category', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ name, icon })
             });
-
             showNotification('Category added!', 'success');
-            document.getElementById('new-cat-name').value = '';
-            document.getElementById('new-cat-icon').value = '';
             fetchCategories();
-            openAdminDashboard();
         }
 
         async function saveProduct() {
@@ -684,7 +693,7 @@
                 body: JSON.stringify({ id, title, description, category, imageUrl, price, accounts })
             });
 
-            showNotification('Listing saved successfully!', 'success');
+            showNotification('Product saved!', 'success');
             openAdminDashboard();
             fetchProducts();
         }
@@ -694,38 +703,66 @@
             const res = await fetch('/api/admin/analytics');
             const data = await res.json();
 
-            document.getElementById('stat-users').innerText = data.totalUsers;
-            document.getElementById('stat-sales').innerText = '$' + data.todaySalesUSD;
-
-            // Render Pending Deposit Requests for Admin Approval
-            let depHTML = `<table class="data-table"><tr><th>User Email</th><th>TrxID</th><th>Method</th><th>Amount</th><th>Action</th></tr>`;
-            if (data.pendingDeposits.length === 0) depHTML += `<tr><td colspan="5" style="text-align:center; color:gray;">No pending deposits.</td></tr>`;
+            // Render Pending Deposits
+            let depHTML = `<table class="data-table"><tr><th>User</th><th>TrxID</th><th>Method</th><th>Amount</th><th>Action</th></tr>`;
             data.pendingDeposits.forEach(d => {
-                depHTML += `<tr><td>${d.email}</td><td><code>${d.txId}</code></td><td>${d.method}</td><td>$${d.amount}</td><td><button class="btn btn-success" style="padding:2px 8px; font-size:11px;" onclick="approveDeposit(${d.id})">Confirm & Approve</button></td></tr>`;
+                depHTML += `<tr><td>${d.email}</td><td><code>${d.txId}</code></td><td>${d.method}</td><td>$${d.amount}</td><td><button class="btn btn-success" style="padding:2px 8px; font-size:11px;" onclick="approveDeposit(${d.id})">Approve</button></td></tr>`;
             });
             document.getElementById('admin-pending-deposits').innerHTML = depHTML + `</table>`;
 
-            // Listings Table
-            let listHTML = `<table class="data-table"><tr><th>Title</th><th>Category</th><th>Stock</th><th>Action</th></tr>`;
+            // Render Active Chat Users List for Admin
+            let usersHTML = '';
+            data.activeChatUsers.forEach(u => {
+                usersHTML += `<div style="padding:10px; cursor:pointer; border-bottom:1px solid #e2e8f0; font-size:12px;" onclick="loadAdminChatForUser('${u}')">💬 ${u}</div>`;
+            });
+            document.getElementById('admin-chat-users-list').innerHTML = usersHTML || '<p style="padding:10px; font-size:12px; color:gray;">No chat active</p>';
+
+            // Listings
+            let listHTML = `<table class="data-table"><tr><th>Title</th><th>Stock</th><th>Action</th></tr>`;
             data.productsList.forEach(p => {
-                listHTML += `<tr><td>${p.title}</td><td>${p.category}</td><td>${p.stock.length}</td><td><button class="btn btn-danger" style="padding:2px 8px; font-size:11px;" onclick="deleteProduct(${p.id})">Delete</button></td></tr>`;
+                listHTML += `<tr><td>${p.title}</td><td>${p.stock.length}</td><td><button class="btn btn-danger" style="padding:2px 8px; font-size:11px;" onclick="deleteProduct(${p.id})">Delete</button></td></tr>`;
             });
             document.getElementById('admin-listings-table').innerHTML = listHTML + `</table>`;
 
             openModal('admin-modal');
         }
 
-        async function approveDeposit(depositId) {
-            const res = await fetch('/api/admin/approve-deposit', {
+        function switchAdminTab(tab) {
+            document.getElementById('a-sec-dash').style.display = tab === 'dash' ? 'block' : 'none';
+            document.getElementById('a-sec-chat').style.display = tab === 'chat' ? 'block' : 'none';
+            document.getElementById('a-tab-dash').classList.toggle('active', tab === 'dash');
+            document.getElementById('a-tab-chat').classList.toggle('active', tab === 'chat');
+        }
+
+        async function loadAdminChatForUser(email) {
+            selectedChatUser = email;
+            const res = await fetch('/api/chat/messages/' + email);
+            const msgs = await res.json();
+
+            let chatHTML = '';
+            msgs.forEach(m => {
+                const isAdmin = m.sender === 'Admin';
+                chatHTML += `<div style="margin-bottom:8px; text-align:${isAdmin ? 'right' : 'left'};">
+                    <span style="background:${isAdmin ? '#2563eb' : '#e2e8f0'}; color:${isAdmin ? '#fff' : '#000'}; padding:6px 12px; border-radius:8px; font-size:13px; display:inline-block;">
+                        <strong>${m.sender}:</strong> ${m.message}
+                    </span>
+                </div>`;
+            });
+            document.getElementById('admin-chat-messages').innerHTML = chatHTML || 'No messages yet.';
+        }
+
+        async function sendAdminChatReply() {
+            const text = document.getElementById('admin-chat-input').value;
+            if (!text || !selectedChatUser) return;
+
+            await fetch('/api/chat/send', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ depositId })
+                body: JSON.stringify({ sender: 'Admin', receiver: selectedChatUser, message: text, userEmail: selectedChatUser })
             });
-            const data = await res.json();
-            if (data.success) {
-                showNotification(data.message, 'success');
-                openAdminDashboard();
-            }
+
+            document.getElementById('admin-chat-input').value = '';
+            loadAdminChatForUser(selectedChatUser);
         }
 
         async function processDeposit() {
@@ -733,21 +770,16 @@
             const amount = document.getElementById('deposit-amount').value;
             const trxId = document.getElementById('deposit-trxid').value;
 
-            if (!currentUser) return showNotification('Please login first!', 'error');
-            if (!amount || !trxId) return showNotification('Amount & TrxID required!', 'error');
+            if (!currentUser || !amount || !trxId) return showNotification('Fill all fields!', 'error');
 
-            const res = await fetch('/api/deposit', {
+            await fetch('/api/deposit', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ email: currentUser, method, amount: parseFloat(amount), trxId })
             });
-            const data = await res.json();
-            if (data.success) {
-                showNotification(data.message, 'success');
-                closeModal('deposit-modal');
-            } else {
-                showNotification(data.message, 'error');
-            }
+
+            showNotification('Deposit requested!', 'success');
+            closeModal('deposit-modal');
         }
 
         async function fetchBalance() {
@@ -757,36 +789,6 @@
             document.getElementById('user-balance').innerText = '$' + data.balance.toFixed(2);
         }
 
-        function switchUserTab(tabName) {
-            document.querySelectorAll('.dash-sidebar .dash-menu li').forEach(li => li.classList.remove('active'));
-            document.querySelectorAll('.u-tab-content').forEach(div => div.style.display = 'none');
-            document.getElementById('u-tab-' + tabName).classList.add('active');
-            document.getElementById('u-section-' + tabName).style.display = 'block';
-        }
-
-        async function openUserDashboard() {
-            if (!currentUser) return;
-            const res = await fetch('/api/user/dashboard/' + currentUser);
-            const data = await res.json();
-
-            document.getElementById('u-dash-name').innerText = data.firstName;
-            document.getElementById('u-stat-orders').innerText = data.totalOrdersCount;
-            document.getElementById('u-stat-spent').innerText = '$' + data.totalSpent.toFixed(2);
-            document.getElementById('u-stat-bal').innerText = '$' + data.balance.toFixed(2);
-
-            let oHTML = `<table class="data-table"><tr><th>Order ID</th><th>Product</th><th>Qty</th><th>Price</th></tr>`;
-            data.orders.forEach(o => { oHTML += `<tr><td>${o.orderId}</td><td>${o.productTitle}</td><td>${o.quantity || 1}</td><td>$${o.price}</td></tr>`; });
-            document.getElementById('u-orders-table').innerHTML = oHTML + `</table>`;
-
-            let dHTML = `<table class="data-table"><tr><th>TrxID</th><th>Method</th><th>Amount</th><th>Status</th></tr>`;
-            data.deposits.forEach(d => { dHTML += `<tr><td>${d.txId}</td><td>${d.method}</td><td>$${d.amount}</td><td><span class="status-badge ${d.status === 'Pending' ? 'status-pending' : ''}">${d.status}</span></td></tr>`; });
-            document.getElementById('u-deposits-table').innerHTML = dHTML + `</table>`;
-
-            switchUserTab('dash');
-            openModal('user-modal');
-        }
-
-        // Live Chat Toggle & Fetch
         function toggleChat() {
             const box = document.getElementById('chat-box');
             box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
@@ -794,30 +796,26 @@
         }
 
         async function fetchChatMessages() {
-            if (!currentUser && !isAdminLoggedIn) return;
-            const targetEmail = isAdminLoggedIn ? 'sean.storr75@gmail.com' : currentUser;
-            const res = await fetch('/api/chat/messages/' + targetEmail);
+            if (!currentUser) return;
+            const res = await fetch('/api/chat/messages/' + currentUser);
             const msgs = await res.json();
 
             const body = document.getElementById('chat-body');
             body.innerHTML = '';
             msgs.forEach(m => {
-                const isMe = m.sender === (currentUser || 'Admin');
+                const isMe = m.sender !== 'Admin';
                 body.innerHTML += `<div class="chat-msg ${isMe ? 'me' : 'other'}"><strong>${m.sender}:</strong> ${m.message}</div>`;
             });
         }
 
         async function sendChatMessage() {
             const text = document.getElementById('chat-input').value;
-            if (!text) return;
-
-            const sender = isAdminLoggedIn ? 'Admin' : (currentUserName || 'User');
-            const userEmail = currentUser || 'sean.storr75@gmail.com';
+            if (!text || !currentUser) return;
 
             await fetch('/api/chat/send', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ sender, receiver: 'Support', message: text, userEmail })
+                body: JSON.stringify({ sender: currentUserName || 'User', receiver: 'Admin', message: text, userEmail: currentUser })
             });
 
             document.getElementById('chat-input').value = '';
