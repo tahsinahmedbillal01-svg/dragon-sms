@@ -10,77 +10,94 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ইন-মেমোরি ডাটাবেস (সাময়িকভাবে ডেটা রাখার জন্য)
+// Data Storage
+let categories = ['Outlook', 'Gmail', 'Facebook'];
 let products = [];
-let users = [];
+let users = {}; 
 let orders = [];
 
-// ১. এডমিন প্রোডাক্ট ও বাল্ক স্টক আপলোড এপিআই
+// Categories API
+app.get('/api/categories', (req, res) => res.json(categories));
+app.post('/api/admin/add-category', (req, res) => {
+    const { category } = req.body;
+    if (category && !categories.includes(category)) {
+        categories.push(category);
+    }
+    res.json({ success: true, categories });
+});
+
+// Admin Product Upload & Delete
 app.post('/api/admin/add-product', (req, res) => {
-    const { title, category, price, description, accounts } = req.body;
-    
-    // লাইন বাই লাইন অ্যাকাউন্ট স্প্লিট করা
-    const accountList = accounts ? accounts.split('\n').filter(line => line.trim() !== '') : [];
+    const { title, category, price, accounts } = req.body;
+    const accountList = accounts ? accounts.split('\n').map(a => a.trim()).filter(a => a !== '') : [];
     
     const newProduct = {
         id: Date.now(),
         title,
         category,
         price: parseFloat(price),
-        description,
-        stock: accountList, // কতগুলো অ্যাকাউন্ট আছে
-        stockCount: accountList.length
+        stock: accountList
     };
     
     products.push(newProduct);
-    res.json({ success: true, message: 'প্রোডাক্ট সফলভাবে যোগ হয়েছে!', product: newProduct });
+    res.json({ success: true, message: 'Listing added successfully!' });
 });
 
-// ২. কাস্টমার প্রোডাক্ট লিস্ট দেখার এপিআই
+app.delete('/api/admin/delete-product/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    products = products.filter(p => p.id !== id);
+    res.json({ success: true, message: 'Listing deleted successfully!' });
+});
+
+// Products List
 app.get('/api/products', (req, res) => {
-    // সেফটির জন্য স্টক অ্যাকাউন্টের টেক্সট হাইড করে শুধু কাউন্ট পাঠানো হয়
     const safeProducts = products.map(p => ({
         id: p.id,
         title: p.title,
         category: p.category,
         price: p.price,
-        description: p.description,
         stockCount: p.stock.length
     }));
     res.json(safeProducts);
 });
 
-// ৩. বিকাশ ডিপোজিট এপিআই (টাকা থেকে ডলারে কনভার্ট)
-app.post('/api/deposit/bkash', (req, res) => {
-    const { email, amountBDT, rate } = req.body; // rate যেমন ১২০ টাকা = ১ ডলার
-    const usdAmount = parseFloat((amountBDT / (rate || 120)).toFixed(2));
-
-    let user = users.find(u => u.email === email);
-    if (!user) {
-        user = { email, balanceUSD: 0 };
-        users.push(user);
-    }
-    
-    user.balanceUSD += usdAmount;
-    res.json({ success: true, message: `ডিপোজিট সফল! $${usdAmount} যোগ হয়েছে।`, balance: user.balanceUSD });
+// User Balance API
+app.get('/api/user/balance/:email', (req, res) => {
+    const email = req.params.email;
+    res.json({ balance: users[email] || 0 });
 });
 
-// ৪. প্রোডাক্ট কেনাকাটা এপিআই
+// Deposit API (bKash & Crypto)
+app.post('/api/deposit', (req, res) => {
+    const { email, method, amount } = req.body;
+    if (!email) return res.status(400).json({ success: false, message: 'Email required' });
+
+    let addedUSD = 0;
+    if (method === 'bkash') {
+        addedUSD = parseFloat((amount / 120).toFixed(2)); // 120 BDT = 1 USD
+    } else if (method === 'crypto') {
+        addedUSD = parseFloat(amount); // Direct USD
+    }
+
+    users[email] = (users[email] || 0) + addedUSD;
+    res.json({ success: true, message: `Deposit successful! $${addedUSD} USD added.`, balance: users[email] });
+});
+
+// Buy API
 app.post('/api/buy', (req, res) => {
     const { email, productId } = req.body;
     const product = products.find(p => p.id === productId);
-    const user = users.find(u => u.email === email);
+    const userBalance = users[email] || 0;
 
     if (!product || product.stock.length === 0) {
-        return res.status(400).json({ success: false, message: 'স্টকে অ্যাকাউন্ট নেই!' });
+        return res.status(400).json({ success: false, message: 'Out of stock!' });
     }
-    if (!user || user.balanceUSD < product.price) {
-        return res.status(400).json({ success: false, message: 'পর্যাপ্ত ব্যালেন্স নেই! আগে ডিপোজিট করুন।' });
+    if (userBalance < product.price) {
+        return res.status(400).json({ success: false, message: 'Insufficient balance! Please deposit.' });
     }
 
-    // ব্যালেন্স কাটা এবং স্টক থেকে ১টি অ্যাকাউন্ট ডেলিভারি
-    user.balanceUSD -= product.price;
-    const deliveredAccount = product.stock.shift(); // প্রথম অ্যাকাউন্টটি নেওয়া হলো
+    users[email] -= product.price;
+    const deliveredAccount = product.stock.shift();
 
     const order = {
         orderId: 'ORD-' + Date.now(),
@@ -92,10 +109,10 @@ app.post('/api/buy', (req, res) => {
     };
     orders.push(order);
 
-    res.json({ success: true, message: 'কেনাকাটা সফল হয়েছে!', account: deliveredAccount, remainingBalance: user.balanceUSD });
+    res.json({ success: true, message: 'Purchase successful!', account: deliveredAccount, balance: users[email] });
 });
 
-// ৫. কাস্টমার অর্ডার হিস্টোরি এপিআই
+// Order History
 app.get('/api/orders/:email', (req, res) => {
     const userOrders = orders.filter(o => o.email === req.params.email);
     res.json(userOrders);
@@ -105,6 +122,4 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
