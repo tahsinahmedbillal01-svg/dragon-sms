@@ -43,18 +43,12 @@ function saveData() {
 const ADMIN_EMAIL = "sean.storr75@gmail.com";
 const ADMIN_PASS = "Alex@123tt";
 
-// Authentication APIs
+// Auth APIs
 app.post('/api/auth/signup', (req, res) => {
     const { firstName, lastName, email, password, confirmPassword } = req.body;
-    if (!firstName || !lastName || !email || !password) {
-        return res.status(400).json({ success: false, message: 'All fields are required!' });
-    }
-    if (password !== confirmPassword) {
-        return res.status(400).json({ success: false, message: 'Passwords do not match!' });
-    }
-    if (db.users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
-        return res.status(400).json({ success: false, message: 'Email already registered!' });
-    }
+    if (!firstName || !lastName || !email || !password) return res.status(400).json({ success: false, message: 'All fields required!' });
+    if (password !== confirmPassword) return res.status(400).json({ success: false, message: 'Passwords do not match!' });
+    if (db.users.find(u => u.email.toLowerCase() === email.toLowerCase())) return res.status(400).json({ success: false, message: 'Email already registered!' });
 
     const newUser = { firstName, lastName, email: email.toLowerCase(), password, balanceUSD: 0, date: new Date().toLocaleDateString() };
     db.users.push(newUser);
@@ -89,7 +83,7 @@ app.post('/api/auth/login', (req, res) => {
     });
 });
 
-// Admin Analytics & Chat Data
+// Admin Analytics & Data
 app.get('/api/admin/analytics', (req, res) => {
     const today = new Date().toLocaleDateString();
     const todaySales = db.orders
@@ -110,7 +104,7 @@ app.get('/api/admin/analytics', (req, res) => {
     });
 });
 
-// Category Management
+// Category APIs
 app.get('/api/categories', (req, res) => res.json(db.categories));
 
 app.post('/api/admin/add-category', (req, res) => {
@@ -122,7 +116,7 @@ app.post('/api/admin/add-category', (req, res) => {
     res.json({ success: true, categories: db.categories });
 });
 
-// Save Listing with File/Image Data
+// Save Product with File Base64 support
 app.post('/api/admin/save-product', (req, res) => {
     const { id, title, description, category, price, imageUrl, accounts } = req.body;
     const accountList = accounts ? accounts.split('\n').map(a => a.trim()).filter(a => a !== '') : [];
@@ -159,7 +153,7 @@ app.post('/api/admin/save-product', (req, res) => {
     }
 
     saveData();
-    res.json({ success: true, message: 'Product listing saved!' });
+    res.json({ success: true, message: 'Product saved!' });
 });
 
 app.delete('/api/admin/delete-product/:id', (req, res) => {
@@ -182,10 +176,10 @@ app.get('/api/products', (req, res) => {
     res.json(safeProducts);
 });
 
-// User Info
+// User Dashboard Data
 app.get('/api/user/dashboard/:email', (req, res) => {
     const user = db.users.find(u => u.email.toLowerCase() === req.params.email.toLowerCase());
-    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    if (!user) return res.status(404).json({ success: false });
 
     const userOrders = db.orders.filter(o => o.email.toLowerCase() === req.params.email.toLowerCase());
     const userDeposits = db.deposits.filter(d => d.email.toLowerCase() === req.params.email.toLowerCase());
@@ -203,11 +197,11 @@ app.get('/api/user/dashboard/:email', (req, res) => {
     });
 });
 
-// Deposits
+// Deposit Handling
 app.post('/api/deposit', (req, res) => {
     const { email, method, amount, trxId } = req.body;
     const user = db.users.find(u => u.email.toLowerCase() === email.toLowerCase());
-    if (!user || !trxId) return res.status(400).json({ success: false, message: 'Invalid submission!' });
+    if (!user || !trxId) return res.status(400).json({ success: false, message: 'Invalid data!' });
 
     let addedUSD = method === 'bkash' ? parseFloat((amount / 120).toFixed(2)) : parseFloat(amount);
 
@@ -235,10 +229,10 @@ app.post('/api/admin/approve-deposit', (req, res) => {
         saveData();
         return res.json({ success: true, message: 'Deposit approved!' });
     }
-    res.status(400).json({ success: false, message: 'Error approving deposit.' });
+    res.status(400).json({ success: false, message: 'Error approving.' });
 });
 
-// Buy logic
+// Buy Logic
 app.post('/api/buy', (req, res) => {
     const { email, productId, quantity } = req.body;
     const qty = parseInt(quantity) || 1;
@@ -273,7 +267,7 @@ app.post('/api/buy', (req, res) => {
     res.json({ success: true, message: 'Purchase successful!', order, balance: user.balanceUSD });
 });
 
-// Live Chat APIs
+// Chat Engine
 app.get('/api/chat/messages/:email', (req, res) => {
     const userEmail = req.params.email.toLowerCase();
     const msgs = db.chatMessages.filter(m => m.userEmail.toLowerCase() === userEmail);
