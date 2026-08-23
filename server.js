@@ -2,32 +2,51 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-// JSON & URL-encoded payload limit size increased for Image base64 string upload
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-let categories = ['Outlook', 'Gmail', 'Facebook'];
-let products = [];
-let users = [];
-let orders = [];
-let deposits = [];
+const DATA_FILE = path.join(__dirname, 'data.json');
 
-const tempEmailDomains = ['mailinator.com', '10minutemail.com', 'tempmail.com', 'guerrillamail.com', 'throwawaymail.com', 'yopmail.com', 'tempmailo.com'];
+// Initial Data Structure
+let db = {
+    categories: [
+        { name: 'Facebook', icon: 'https://cdn-icons-png.flaticon.com/512/5968/5968764.png' },
+        { name: 'Outlook', icon: 'https://cdn-icons-png.flaticon.com/512/732/732221.png' },
+        { name: 'Gmail', icon: 'https://cdn-icons-png.flaticon.com/512/5968/5968534.png' }
+    ],
+    products: [],
+    users: [],
+    orders: [],
+    deposits: [],
+    chatMessages: []
+};
+
+// Load saved data from JSON file
+if (fs.existsSync(DATA_FILE)) {
+    try {
+        const raw = fs.readFileSync(DATA_FILE);
+        db = JSON.parse(raw);
+    } catch (e) {
+        console.log('Error reading data file, using defaults.');
+    }
+}
+
+// Function to save data to JSON file
+function saveData() {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(db, null, 2));
+}
+
 const ADMIN_EMAIL = "sean.storr75@gmail.com";
 const ADMIN_PASS = "Alex@123tt";
 
-function isTempEmail(email) {
-    const domain = email.split('@')[1];
-    return tempEmailDomains.includes(domain ? domain.toLowerCase() : '');
-}
-
-// User Sign Up
+// Sign Up
 app.post('/api/auth/signup', (req, res) => {
     const { firstName, lastName, email, password, confirmPassword } = req.body;
 
@@ -37,16 +56,28 @@ app.post('/api/auth/signup', (req, res) => {
     if (password !== confirmPassword) {
         return res.status(400).json({ success: false, message: 'Passwords do not match!' });
     }
-    if (isTempEmail(email)) {
-        return res.status(400).json({ success: false, message: 'Temporary emails are not allowed!' });
-    }
-    if (users.find(u => u.email === email)) {
-        return res.status(400).json({ success: false, message: 'Email already registered!' });
+    if (db.users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+        return res.status(400).json({ success: false, message: 'Email already registered! One email per account allowed.' });
     }
 
-    const newUser = { firstName, lastName, email, password, balanceUSD: 0, date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) };
-    users.push(newUser);
+    const newUser = { firstName, lastName, email: email.toLowerCase(), password, balanceUSD: 0, date: new Date().toLocaleDateString('en-US') };
+    db.users.push(newUser);
+    saveData();
     res.json({ success: true, message: 'Account registered successfully!' });
+});
+
+// Forgot Password Reset
+app.post('/api/auth/forgot-password', (req, res) => {
+    const { email, newPassword } = req.body;
+    const user = db.users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+    if (!user) {
+        return res.status(400).json({ success: false, message: 'Email not found!' });
+    }
+
+    user.password = newPassword;
+    saveData();
+    res.json({ success: true, message: 'Password updated successfully! Please login with your new password.' });
 });
 
 // Login
@@ -57,7 +88,7 @@ app.post('/api/auth/login', (req, res) => {
         return res.json({ success: true, isAdmin: true, message: 'Welcome to Admin Control Panel!' });
     }
 
-    const user = users.find(u => u.email === email && u.password === password);
+    const user = db.users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
     if (!user) {
         return res.status(400).json({ success: false, message: 'Invalid email or password!' });
     }
@@ -70,59 +101,59 @@ app.post('/api/auth/login', (req, res) => {
     });
 });
 
-// Admin Analytics API
+// Admin Analytics
 app.get('/api/admin/analytics', (req, res) => {
     const today = new Date().toLocaleDateString();
-    
-    const todaySales = orders
+    const todaySales = db.orders
         .filter(o => new Date(o.rawDate).toLocaleDateString() === today)
         .reduce((sum, o) => sum + o.price, 0);
 
     res.json({
-        totalUsers: users.length,
+        totalUsers: db.users.length,
         todaySalesUSD: todaySales.toFixed(2),
-        totalSoldProducts: orders.length,
-        usersList: users,
-        ordersList: orders,
-        productsList: products
+        totalSoldProducts: db.orders.length,
+        usersList: db.users,
+        ordersList: db.orders,
+        productsList: db.products,
+        pendingDeposits: db.deposits.filter(d => d.status === 'Pending')
     });
 });
 
-// Categories & Listings APIs
-app.get('/api/categories', (req, res) => res.json(categories));
+// Categories APIs
+app.get('/api/categories', (req, res) => res.json(db.categories));
 
 app.post('/api/admin/add-category', (req, res) => {
-    const { category } = req.body;
-    if (category && !categories.includes(category)) {
-        categories.push(category);
+    const { name, icon } = req.body;
+    if (name) {
+        db.categories.push({ name, icon: icon || 'https://via.placeholder.com/30' });
+        saveData();
     }
-    res.json({ success: true, categories });
+    res.json({ success: true, categories: db.categories });
 });
 
-// Add / Edit Product with Image Base64 & Description & Restock
+// Save / Restock Product
 app.post('/api/admin/save-product', (req, res) => {
     const { id, title, description, category, price, imageUrl, accounts } = req.body;
     const accountList = accounts ? accounts.split('\n').map(a => a.trim()).filter(a => a !== '') : [];
 
     if (id) {
-        // Edit Existing Product (Add extra stock if provided)
-        const index = products.findIndex(p => p.id === parseInt(id));
+        const index = db.products.findIndex(p => p.id === parseInt(id));
         if (index !== -1) {
-            let existingStock = products[index].stock || [];
+            let existingStock = db.products[index].stock || [];
             let updatedStock = accountList.length > 0 ? existingStock.concat(accountList) : existingStock;
 
-            products[index] = {
+            db.products[index] = {
                 id: parseInt(id),
                 title,
                 description: description || '',
                 category,
                 price: parseFloat(price),
-                imageUrl: imageUrl || products[index].imageUrl || 'https://via.placeholder.com/150',
-                stock: updatedStock
+                imageUrl: imageUrl || db.products[index].imageUrl || 'https://via.placeholder.com/150',
+                stock: updatedStock,
+                soldCount: db.products[index].soldCount || 0
             };
         }
     } else {
-        // Create New Product
         const newProduct = {
             id: Date.now(),
             title,
@@ -130,42 +161,46 @@ app.post('/api/admin/save-product', (req, res) => {
             category,
             price: parseFloat(price),
             imageUrl: imageUrl || 'https://via.placeholder.com/150',
-            stock: accountList
+            stock: accountList,
+            soldCount: 0
         };
-        products.push(newProduct);
+        db.products.push(newProduct);
     }
 
-    res.json({ success: true, message: 'Listing saved & restocked successfully!' });
+    saveData();
+    res.json({ success: true, message: 'Listing saved successfully!' });
 });
 
 app.delete('/api/admin/delete-product/:id', (req, res) => {
     const id = parseInt(req.params.id);
-    products = products.filter(p => p.id !== id);
+    db.products = db.products.filter(p => p.id !== id);
+    saveData();
     res.json({ success: true, message: 'Listing deleted successfully!' });
 });
 
 app.get('/api/products', (req, res) => {
-    const safeProducts = products.map(p => ({
+    const safeProducts = db.products.map(p => ({
         id: p.id,
         title: p.title,
         description: p.description,
         category: p.category,
         price: p.price,
         imageUrl: p.imageUrl,
-        stockCount: p.stock.length
+        stockCount: p.stock.length,
+        soldCount: p.soldCount || 0
     }));
     res.json(safeProducts);
 });
 
+// User Dashboard Data
 app.get('/api/user/dashboard/:email', (req, res) => {
-    const user = users.find(u => u.email === req.params.email);
+    const user = db.users.find(u => u.email.toLowerCase() === req.params.email.toLowerCase());
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
-    const userOrders = orders.filter(o => o.email === req.params.email);
-    const userDeposits = deposits.filter(d => d.email === req.params.email);
+    const userOrders = db.orders.filter(o => o.email.toLowerCase() === req.params.email.toLowerCase());
+    const userDeposits = db.deposits.filter(d => d.email.toLowerCase() === req.params.email.toLowerCase());
 
     const totalSpent = userOrders.reduce((sum, o) => sum + o.price, 0);
-    const totalDeposited = userDeposits.reduce((sum, d) => sum + d.amount, 0);
 
     res.json({
         firstName: user.firstName,
@@ -174,60 +209,111 @@ app.get('/api/user/dashboard/:email', (req, res) => {
         memberSince: user.date,
         balance: user.balanceUSD,
         totalSpent,
-        totalDeposited,
         totalOrdersCount: userOrders.length,
         orders: userOrders,
         deposits: userDeposits
     });
 });
 
+// Deposit Request with TrxID
 app.post('/api/deposit', (req, res) => {
-    const { email, method, amount } = req.body;
-    const user = users.find(u => u.email === email);
+    const { email, method, amount, trxId } = req.body;
+    const user = db.users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
     if (!user) return res.status(400).json({ success: false, message: 'User not found!' });
+    if (!trxId) return res.status(400).json({ success: false, message: 'Transaction ID is required!' });
 
     let addedUSD = method === 'bkash' ? parseFloat((amount / 120).toFixed(2)) : parseFloat(amount);
-    user.balanceUSD += addedUSD;
 
     const dep = {
-        txId: '#DEP-' + Math.floor(1000 + Math.random() * 9000),
-        email,
+        id: Date.now(),
+        txId: trxId,
+        email: user.email,
         amount: addedUSD,
         method: method.toUpperCase(),
         date: new Date().toLocaleString(),
-        status: 'Completed'
+        status: 'Pending'
     };
-    deposits.push(dep);
+    db.deposits.push(dep);
+    saveData();
 
-    res.json({ success: true, message: `Deposit successful! $${addedUSD} USD added.`, balance: user.balanceUSD });
+    res.json({ success: true, message: 'Deposit request submitted! Admin will verify TrxID and approve.' });
 });
 
+// Admin Deposit Approval
+app.post('/api/admin/approve-deposit', (req, res) => {
+    const { depositId } = req.body;
+    const dep = db.deposits.find(d => d.id === depositId);
+
+    if (dep && dep.status === 'Pending') {
+        dep.status = 'Approved';
+        const user = db.users.find(u => u.email.toLowerCase() === dep.email.toLowerCase());
+        if (user) {
+            user.balanceUSD += dep.amount;
+        }
+        saveData();
+        return res.json({ success: true, message: 'Deposit approved & balance added!' });
+    }
+    res.status(400).json({ success: false, message: 'Invalid or already processed deposit.' });
+});
+
+// Bulk Buy Products with Quantity
 app.post('/api/buy', (req, res) => {
-    const { email, productId } = req.body;
-    const product = products.find(p => p.id === productId);
-    const user = users.find(u => u.email === email);
+    const { email, productId, quantity } = req.body;
+    const qty = parseInt(quantity) || 1;
+    const product = db.products.find(p => p.id === productId);
+    const user = db.users.find(u => u.email.toLowerCase() === email.toLowerCase());
 
     if (!user) return res.status(400).json({ success: false, message: 'Please login first!' });
-    if (!product || product.stock.length === 0) return res.status(400).json({ success: false, message: 'Out of stock!' });
-    if (user.balanceUSD < product.price) return res.status(400).json({ success: false, message: 'Insufficient balance!' });
+    if (!product || product.stock.length < qty) return res.status(400).json({ success: false, message: 'Not enough stock available!' });
 
-    user.balanceUSD -= product.price;
-    const deliveredAccount = product.stock.shift();
+    const totalPrice = product.price * qty;
+    if (user.balanceUSD < totalPrice) return res.status(400).json({ success: false, message: `Insufficient balance! Needed: $${totalPrice.toFixed(2)}` });
+
+    user.balanceUSD -= totalPrice;
+    const purchasedAccounts = product.stock.splice(0, qty);
+    product.soldCount = (product.soldCount || 0) + qty;
+
+    const deliveredText = purchasedAccounts.join('\n');
 
     const order = {
-        orderId: '#ORD-' + Math.floor(1000 + Math.random() * 9000),
-        email,
+        orderId: '#ORD-' + Math.floor(10000 + Math.random() * 90000),
+        email: user.email,
         productTitle: product.title,
+        quantity: qty,
         category: product.category,
-        accountData: deliveredAccount,
-        price: product.price,
+        accountData: deliveredText,
+        price: totalPrice,
         rawDate: new Date(),
-        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        date: new Date().toLocaleDateString('en-US'),
         status: 'Completed'
     };
-    orders.push(order);
+    db.orders.push(order);
+    saveData();
 
     res.json({ success: true, message: 'Purchase successful!', order, balance: user.balanceUSD });
+});
+
+// Live Chat Support APIs
+app.get('/api/chat/messages/:email', (req, res) => {
+    const userEmail = req.params.email.toLowerCase();
+    const msgs = db.chatMessages.filter(m => m.userEmail.toLowerCase() === userEmail || m.receiver.toLowerCase() === userEmail);
+    res.json(msgs);
+});
+
+app.post('/api/chat/send', (req, res) => {
+    const { sender, receiver, message, userEmail } = req.body;
+    const chat = {
+        id: Date.now(),
+        sender,
+        receiver,
+        message,
+        userEmail: userEmail.toLowerCase(),
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    db.chatMessages.push(chat);
+    saveData();
+    res.json({ success: true, chat });
 });
 
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
